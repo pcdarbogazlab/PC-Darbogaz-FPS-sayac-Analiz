@@ -10,12 +10,15 @@
     <meta name="keywords" content="pc darboğaz testi, bottleneck calculator, fps hesaplama, cpu gpu uyumu, rtx 5090 darboğaz, rx 9070 xt fps, sistem analiz">
     <meta name="author" content="Risual">
     <meta name="robots" content="index, follow">
-<meta name="google-site-verification" content="aiXLPBJiYSd0s6V2Sp53hsXnVDu2LzhJVEnJeszdhCQ" />
+
+    <!-- GOOGLE SEARCH CONSOLE DOĞRULAMA ETİKETİ (Buradaki boşluğa kendi kodunu yapıştır) -->
+    <!-- ÖRNEK: <meta name="google-site-verification" content="SİZİN_KODUNUZ" /> -->
+
     <!-- SOSYAL MEDYA PAYLAŞIM ETİKETLERİ (Open Graph) -->
     <meta property="og:title" content="PC Darboğaz & FPS Analiz Laboratuvarı">
     <meta property="og:description" content="İşlemci ve ekran kartı kombinasyonunuzun darboğaz oranını ve tahmini oyun FPS değerlerini hemen hesaplayın.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://risually.github.io/PC-Darbo-az-FPS-sayac-Analiz/">
+    <meta property="og:url" content="https://risually.github.io/PC-Darbogaz-FPS-sayac-Analiz/">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -26,6 +29,8 @@
         .search-box { background-color: #0f172a !important; color: #38bdf8 !important; border: 1px solid #334155 !important; border-radius: 8px; }
         .search-box::placeholder { color: #64748b; }
         .select-box { background-color: #0f172a; color: white; border: 1px solid #334155; border-radius: 8px; }
+        .feature-card { background-color: #0f172a; border: 1px solid #334155; border-radius: 12px; height: 100%; transition: transform 0.2s ease; }
+        .feature-card:hover { transform: translateY(-4px); border-color: #38bdf8; }
         .hardware-img { opacity: 0.15; transition: opacity 0.3s ease; position: fixed; top: 20%; width: 220px; z-index: 0; pointer-events: none; }
         .hardware-left { left: 20px; }
         .hardware-right { right: 20px; }
@@ -41,12 +46,12 @@
 <div class="container py-5 position-relative" style="z-index: 1;">
     <div class="text-center mb-5">
         <h1 class="fw-bold text-info display-5">🖥️ PC Darboğaz & Performance Lab</h1>
-        <p class="text-muted fs-5">Tüm ekran kartları ve işlemciler için RAM ve çözünürlük destekli sistem analizi</p>
+        <p class="text-muted fs-5">Eksiksiz AMD/Intel CPU ve AMD/NVIDIA GPU VRAM kütüphanesi ile sistem analizi.</p>
     </div>
     
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card p-4 p-md-5 shadow-lg mb-4">
+            <div class="card p-4 p-md-5 shadow-lg mb-5">
                 <form id="hesapForm">
                     <div class="row g-4">
                         
@@ -91,7 +96,7 @@
             </div>
 
             <!-- Sonuç Alanı -->
-            <div id="sonucAlani" class="card p-4 shadow-lg d-none">
+            <div id="sonucAlani" class="card p-4 shadow-lg mb-5 d-none">
                 <h3 class="text-warning text-center mb-4">📊 Detaylı Analiz Raporu</h3>
                 
                 <div class="row text-center mb-4">
@@ -125,6 +130,51 @@
 
                 <div class="alert alert-dark border-info" id="oneriMetni"></div>
             </div>
+
+            <!-- NEDEN BİZ / SİSTEM NASIL ÇALIŞIR? -->
+            <div class="card p-4 p-md-5 shadow-lg">
+                <h3 class="text-info fw-bold text-center mb-2">💡 Neden Bizim Sistemimiz?</h3>
+                <p class="text-muted text-center mb-4 fs-6">Sistemimiz, sıradan darboğaz hesaplayıcılarından farklı olarak gerçekçi ve dinamik algoritmalara dayanır.</p>
+                
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="p-4 feature-card">
+                            <h5 class="text-warning fw-bold mb-2">🎯 Çözünürlük Bazlı Dinamik Algoritma</h5>
+                            <p class="text-muted mb-0 small">
+                                Birçok araç çözünürlük değişse de sabit oran verir. Bizim sistemimiz ise 1080p, 2K ve 4K seçimlerinize göre yükün işlemciden ekran kartına kaymasını gerçekçi katsayılarla simüle eder.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="p-4 feature-card">
+                            <h5 class="text-warning fw-bold mb-2">🚀 En Güncel Donanım Veritabanı</h5>
+                            <p class="text-muted mb-0 small">
+                                Eski veritabanlarıyla sınırlı kalmayın. NVIDIA RTX 50 serisi, AMD RX 9000 serisi ve Intel Core Ultra işlemciler dahil en yeni mimariler sıcağı sıcağına sistemimizde tanımlıdır.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="p-4 feature-card">
+                            <h5 class="text-warning fw-bold mb-2">⚡ RAM Miktarı ve FPS Çarpanı</h5>
+                            <p class="text-muted mb-0 small">
+                                Yalnızca CPU ve GPU'yu değil, sisteminizin belleğini (8GB, 16GB, 32GB vb.) de hesaba katar. RAM yetersizliğinden kaynaklanan performans kayıplarını FPS tahminine doğrudan yansıtır.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="p-4 feature-card">
+                            <h5 class="text-warning fw-bold mb-2">📊 Şeffaf ve Yalın Puanlama</h5>
+                            <p class="text-muted mb-0 small">
+                                Karmaşık ve reklam amaçlı yapay yüzdeler yerine; PassMark, Cinebench ve 3DMark verilerini baz alan, en güçlü tepe donanımlara göre bağıl (göreli) ölçeklenmiş gerçekçi sonuçlar sunar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
