@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesyonel PC Darboğaz & FPS Analizcisi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #090d16; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        .card { background-color: #1e293b; border: 1px solid #334155; color: white; border-radius: 16px; }
+        .btn-custom { background-color: #38bdf8; color: #0f172a; font-weight: bold; border-radius: 8px; }
+        .btn-custom:hover { background-color: #0284c7; color: white; }
+        .search-box { background-color: #0f172a !important; color: #38bdf8 !important; border: 1px solid #334155 !important; border-radius: 8px; }
+        .search-box::placeholder { color: #64748b; }
+        .select-box { background-color: #0f172a; color: white; border: 1px solid #334155; border-radius: 8px; }
+        .hardware-img { opacity: 0.15; transition: opacity 0.3s ease; position: fixed; top: 20%; width: 220px; z-index: 0; pointer-events: none; }
+        .hardware-left { left: 20px; }
+        .hardware-right { right: 20px; }
+        @media (max-width: 1200px) { .hardware-img { display: none; } }
+    </style>
+</head>
+<body>
+
+<!-- Yan Donanım Görselleri -->
+<img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=500&q=80" class="hardware-img hardware-left" alt="CPU Graphics">
+<img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=500&q=80" class="hardware-img hardware-right" alt="GPU Graphics">
+
+<div class="container py-5 position-relative" style="z-index: 1;">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-info display-5">🖥️ PC Darboğaz & Performance Lab</h1>
+        <p class="text-muted fs-5">Eksiksiz AMD/Intel CPU ve AMD/NVIDIA GPU VRAM kütüphanesi ile sistem analizi.</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card p-4 p-md-5 shadow-lg mb-4">
+                <form id="hesapForm">
+                    <div class="row g-4">
+                        
+                        <!-- İşlemci Seçimi -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-light">İşlemci (CPU):</label>
+                            <input type="text" id="cpuInput" class="form-control search-box py-2" list="cpuList" placeholder="🔍 İşlemci ara... (örn: 7800X3D, i5-13600K, FX-8350)">
+                            <datalist id="cpuList"></datalist>
+                        </div>
+
+                        <!-- Ekran Kartı Seçimi -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-light">Ekran Kartı (GPU):</label>
+                            <input type="text" id="gpuInput" class="form-control search-box py-2" list="gpuList" placeholder="🔍 Ekran kartı ara... (örn: RTX 5070, RX 9070 XT, GTX 1060)">
+                            <datalist id="gpuList"></datalist>
+                        </div>
+
+                        <!-- RAM Seçimi -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">RAM Miktarı:</label>
+                            <select id="ramSelect" class="form-select select-box py-2">
+                                <option value="8">8 GB RAM</option>
+                                <option value="16" selected>16 GB RAM</option>
+                                <option value="32">32 GB RAM</option>
+                                <option value="64">64 GB RAM</option>
+                            </select>
+                        </div>
+
+                        <!-- Çözünürlük Seçimi -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Hedef Çözünürlük:</label>
+                            <select id="cozunurlukSelect" class="form-select select-box py-2">
+                                <option value="1080p" selected>1080p (Full HD)</option>
+                                <option value="2k">2K (1440p)</option>
+                                <option value="4k">4K (2160p)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="sistemHesapla()" class="btn btn-custom w-100 py-3 mt-4 fs-5">Sistemi Tam Analiz Et</button>
+                </form>
+            </div>
+
+            <!-- Sonuç Alanı -->
+            <div id="sonucAlani" class="card p-4 shadow-lg d-none">
+                <h3 class="text-warning text-center mb-4">📊 Detaylı Analiz Raporu</h3>
+                
+                <div class="row text-center mb-4">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-secondary mb-2">
+                            <small class="text-muted d-block">Sistem Performans Puanı</small>
+                            <span id="puanMetni" class="fs-2 fw-bold text-info">0</span> / 100
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-secondary mb-2">
+                            <small class="text-muted d-block">Tahmini Ort. FPS (Ultra)</small>
+                            <span id="fpsMetni" class="fs-2 fw-bold text-success">0</span> <small>FPS</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded border border-secondary mb-2">
+                            <small class="text-muted d-block">Darboğaz Durumu</small>
+                            <span id="darbogazMetni" class="fs-5 fw-bold">-%0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Sistem Güç Dağılımı:</label>
+                    <div class="progress" style="height: 25px;">
+                        <div id="cpuBar" class="progress-bar bg-primary" role="progressbar" style="width: 50%;">CPU</div>
+                        <div id="gpuBar" class="progress-bar bg-success" role="progressbar" style="width: 50%;">GPU</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-dark border-info" id="oneriMetni"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const islemciler = [
+        // --- AMD FX & APU ---
+        { ad: "AMD A10-7850K", puan: 12 },
+        { ad: "AMD FX-6300", puan: 15 },
+        { ad: "AMD FX-8320", puan: 18 },
+        { ad: "AMD FX-8350", puan: 20 },
+        { ad: "AMD FX-9590", puan: 22 },
+
+        // --- AMD RYZEN 1000 SERİSİ ---
+        { ad: "AMD Ryzen 3 1200", puan: 20 },
+        { ad: "AMD Ryzen 5 1600", puan: 32 },
+        { ad: "AMD Ryzen 5 1600 AF", puan: 36 },
+        { ad: "AMD Ryzen 7 1700", puan: 38 },
+        { ad: "AMD Ryzen 7 1700X", puan: 40 },
+        { ad: "AMD Ryzen 7 1800X", puan: 42 },
+
+        // --- AMD RYZEN 2000 SERİSİ ---
+        { ad: "AMD Ryzen 3 2200G", puan: 24 },
+        { ad: "AMD Ryzen 5 2400G", puan: 30 },
+        { ad: "AMD Ryzen 5 2600", puan: 38 },
+        { ad: "AMD Ryzen 5 2600X", puan: 40 },
+        { ad: "AMD Ryzen 7 2700", puan: 44 },
+        { ad: "AMD Ryzen 7 2700X", puan: 46 },
+
+        // --- AMD RYZEN 3000 SERİSİ ---
+        { ad: "AMD Ryzen 3 3100", puan: 28 },
+        { ad: "AMD Ryzen 3 3200G", puan: 25 },
+        { ad: "AMD Ryzen 3 3300X", puan: 33 },
+        { ad: "AMD Ryzen 5 3400G", puan: 32 },
+        { ad: "AMD Ryzen 5 3500", puan: 35 },
+        { ad: "AMD Ryzen 5 3500X", puan: 37 },
+        { ad: "AMD Ryzen 5 3600", puan: 42 },
+        { ad: "AMD Ryzen 5 3600X", puan: 44 },
+        { ad: "AMD Ryzen 5 3600XT", puan: 46 },
+        { ad: "AMD Ryzen 7 3700X", puan: 50 },
+        { ad: "AMD Ryzen 7 3800X", puan: 52 },
+        { ad: "AMD Ryzen 7 3800XT", puan: 54 },
+        { ad: "AMD Ryzen 9 3900", puan: 58 },
+        { ad: "AMD Ryzen 9 3900X", puan: 60 },
+        { ad: "AMD Ryzen 9 3950X", puan: 65 },
+
+        // --- AMD RYZEN 5000 SERİSİ ---
+        { ad: "AMD Ryzen 3 4100", puan: 30 },
+        { ad: "AMD Ryzen 3 5100", puan: 36 },
+        { ad: "AMD Ryzen 3 5300G", puan: 38 },
+        { ad: "AMD Ryzen 5 5500", puan: 48 },
+        { ad: "AMD Ryzen 5 5600G", puan: 52 },
+        { ad: "AMD Ryzen 5 5600", puan: 62 },
+        { ad: "AMD Ryzen 5 5600X", puan: 65 },
+        { ad: "AMD Ryzen 7 5700G", puan: 60 },
+        { ad: "AMD Ryzen 7 5700", puan: 68 },
+        { ad: "AMD Ryzen 7 5700X", puan: 70 },
+        { ad: "AMD Ryzen 7 5700X3D", puan: 82 },
+        { ad: "AMD Ryzen 7 5800X", puan: 73 },
+        { ad: "AMD Ryzen 7 5800X3D", puan: 88 },
+        { ad: "AMD Ryzen 9 5900X", puan: 78 },
+        { ad: "AMD Ryzen 9 5900XT", puan: 82 },
+        { ad: "AMD Ryzen 9 5950X", puan: 84 },
+
+        // --- AMD RYZEN 7000 SERİSİ ---
+        { ad: "AMD Ryzen 5 7500F", puan: 78 },
+        { ad: "AMD Ryzen 5 7600", puan: 80 },
+        { ad: "AMD Ryzen 5 7600X", puan: 83 },
+        { ad: "AMD Ryzen 5 7600X3D", puan: 91 },
+        { ad: "AMD Ryzen 7 7700", puan: 85 },
+        { ad: "AMD Ryzen 7 7700X", puan: 87 },
+        { ad: "AMD Ryzen 7 7800X3D", puan: 98 },
+        { ad: "AMD Ryzen 9 7900", puan: 89 },
+        { ad: "AMD Ryzen 9 7900X", puan: 91 },
+        { ad: "AMD Ryzen 9 7900X3D", puan: 95 },
+        { ad: "AMD Ryzen 9 7950X", puan: 96 },
+        { ad: "AMD Ryzen 9 7950X3D", puan: 99 },
+
+        // --- AMD RYZEN 8000G SERİSİ ---
+        { ad: "AMD Ryzen 5 8500G", puan: 68 },
+        { ad: "AMD Ryzen 5 8600G", puan: 74 },
+        { ad: "AMD Ryzen 7 8700G", puan: 80 },
+
+        // --- AMD RYZEN 9000 SERİSİ ---
+        { ad: "AMD Ryzen 5 9600", puan: 86 },
+        { ad: "AMD Ryzen 5 9600X", puan: 88 },
+        { ad: "AMD Ryzen 7 9700X", puan: 92 },
+        { ad: "AMD Ryzen 7 9800X3D", puan: 100 },
+        { ad: "AMD Ryzen 9 9900X", puan: 95 },
+        { ad: "AMD Ryzen 9 9900X3D", puan: 99 },
+        { ad: "AMD Ryzen 9 9950X", puan: 98 },
+        { ad: "AMD Ryzen 9 9950X3D", puan: 100 },
+
+        // --- AMD THREADRIPPER SERİSİ ---
+        { ad: "AMD Threadripper 1950X", puan: 48 },
+        { ad: "AMD Threadripper 2990WX", puan: 62 },
+        { ad: "AMD Threadripper 3970X", puan: 78 },
+        { ad: "AMD Threadripper 3990X", puan: 85 },
+        { ad: "AMD Threadripper 7980X", puan: 98 },
+        { ad: "AMD Threadripper 7990WX", puan: 100 },
+
+        // --- INTEL KLASİKLER & CORE 2 / 1. NESİL ---
+        { ad: "Intel Pentium 4 3.0 GHz", puan: 3 },
+        { ad: "Intel Core 2 Duo E4300", puan: 6 },
+        { ad: "Intel Core 2 Duo E8400", puan: 10 },
+        { ad: "Intel Core 2 Quad Q6600", puan: 14 },
+        { ad: "Intel Core 2 Quad Q9550", puan: 17 },
+        { ad: "Intel Core i3-530", puan: 15 },
+        { ad: "Intel Core i5-750", puan: 20 },
+        { ad: "Intel Core i7-860", puan: 24 },
+        { ad: "Intel Core i7-920", puan: 25 },
+        { ad: "Intel Core i7-980X", puan: 33 },
+
+        // --- INTEL 2. & 3. NESİL ---
+        { ad: "Intel Core i3-2100", puan: 18 },
+        { ad: "Intel Core i5-2400", puan: 24 },
+        { ad: "Intel Core i5-2500K", puan: 27 },
+        { ad: "Intel Core i7-2600K", puan: 33 },
+        { ad: "Intel Core i3-3220", puan: 20 },
+        { ad: "Intel Core i5-3470", puan: 26 },
+        { ad: "Intel Core i5-3570K", puan: 29 },
+        { ad: "Intel Core i7-3770K", puan: 35 },
+
+        // --- INTEL 4., 6. & 7. NESİL ---
+        { ad: "Intel Pentium G3258", puan: 18 },
+        { ad: "Intel Core i3-4130", puan: 22 },
+        { ad: "Intel Core i5-4460", puan: 28 },
+        { ad: "Intel Core i5-4690K", puan: 33 },
+        { ad: "Intel Core i7-4790K", puan: 40 },
+        { ad: "Intel Core i3-6100", puan: 25 },
+        { ad: "Intel Core i5-6500", puan: 32 },
+        { ad: "Intel Core i5-6600K", puan: 36 },
+        { ad: "Intel Core i7-6700K", puan: 44 },
+        { ad: "Intel Pentium G4560", puan: 26 },
+        { ad: "Intel Core i3-7100", puan: 28 },
+        { ad: "Intel Core i5-7400", puan: 34 },
+        { ad: "Intel Core i7-7700K", puan: 46 },
+
+        // --- INTEL 8. & 9. NESİL ---
+        { ad: "Intel Core i3-8100", puan: 32 },
+        { ad: "Intel Core i5-8400", puan: 42 },
+        { ad: "Intel Core i5-8600K", puan: 48 },
+        { ad: "Intel Core i7-8700K", puan: 56 },
+        { ad: "Intel Core i3-9100F", puan: 34 },
+        { ad: "Intel Core i5-9400F", puan: 44 },
+        { ad: "Intel Core i5-9600K", puan: 50 },
+        { ad: "Intel Core i7-9700K", puan: 60 },
+        { ad: "Intel Core i9-9900K", puan: 68 },
+
+        // --- INTEL 10. & 11. NESİL ---
+        { ad: "Intel Core i3-10100F", puan: 38 },
+        { ad: "Intel Core i5-10400F", puan: 48 },
+        { ad: "Intel Core i5-10600K", puan: 55 },
+        { ad: "Intel Core i7-10700K", puan: 65 },
+        { ad: "Intel Core i9-10900K", puan: 72 },
+        { ad: "Intel Core i5-11400F", puan: 52 },
+        { ad: "Intel Core i5-11600K", puan: 58 },
+        { ad: "Intel Core i7-11700K", puan: 68 },
+        { ad: "Intel Core i9-11900K", puan: 74 },
+
+        // --- INTEL 12., 13. & 14. NESİL ---
+        { ad: "Intel Core i3-12100F", puan: 50 },
+        { ad: "Intel Core i5-12400F", puan: 60 },
+        { ad: "Intel Core i5-12600K", puan: 74 },
+        { ad: "Intel Core i7-12700K", puan: 80 },
+        { ad: "Intel Core i9-12900K", puan: 86 },
+        { ad: "Intel Core i3-13100F", puan: 54 },
+        { ad: "Intel Core i5-13400F", puan: 68 },
+        { ad: "Intel Core i5-13600K", puan: 86 },
+        { ad: "Intel Core i7-13700K", puan: 93 },
+        { ad: "Intel Core i9-13900K", puan: 98 },
+        { ad: "Intel Core i3-14100F", puan: 56 },
+        { ad: "Intel Core i5-14400F", puan: 71 },
+        { ad: "Intel Core i5-14600K", puan: 88 },
+        { ad: "Intel Core i7-14700K", puan: 96 },
+        { ad: "Intel Core i9-14900K", puan: 100 },
+
+        // --- INTEL CORE ULTRA SERİSİ ---
+        { ad: "Intel Core Ultra 5 245K", puan: 85 },
+        { ad: "Intel Core Ultra 7 265K", puan: 94 },
+        { ad: "Intel Core Ultra 9 285K", puan: 99 },
+
+        // --- INTEL XEON SERİSİ ---
+        { ad: "Intel Xeon X5675", puan: 28 },
+        { ad: "Intel Xeon E5-2670 v2", puan: 35 },
+        { ad: "Intel Xeon E5-2680 v3", puan: 42 },
+        { ad: "Intel Xeon E5-2680 v4", puan: 46 }
+    ];
+
+    const ekranKartlari = [
+        // --- AMD RADEON HD / R7 / R9 ---
+        { ad: "AMD Radeon HD 7850 (2GB)", puan: 10 },
+        { ad: "AMD Radeon HD 7970 / R9 280X (3GB)", puan: 15 },
+        { ad: "AMD Radeon R9 290X (4GB)", puan: 20 },
+        { ad: "AMD Radeon R9 390X (8GB)", puan: 22 },
+        { ad: "AMD Radeon R9 Fury X (4GB HBM)", puan: 25 },
+
+        // --- AMD RADEON RX 400 & RX 500 ---
+        { ad: "AMD Radeon RX 550 (2GB / 4GB)", puan: 8 },
+        { ad: "AMD Radeon RX 460 / RX 560 (2GB / 4GB)", puan: 12 },
+        { ad: "AMD Radeon RX 470 / RX 570 (4GB / 8GB)", puan: 18 },
+        { ad: "AMD Radeon RX 480 / RX 580 (4GB / 8GB)", puan: 22 },
+        { ad: "AMD Radeon RX 590 (8GB)", puan: 25 },
+
+        // --- AMD RADEON VEGA & RX 5000 ---
+        { ad: "AMD Radeon RX Vega 56 (8GB HBM2)", puan: 32 },
+        { ad: "AMD Radeon RX Vega 64 (8GB HBM2)", puan: 36 },
+        { ad: "AMD Radeon Radeon VII (16GB HBM2)", puan: 42 },
+        { ad: "AMD Radeon RX 5500 XT (4GB)", puan: 26 },
+        { ad: "AMD Radeon RX 5500 XT (8GB)", puan: 28 },
+        { ad: "AMD Radeon RX 5600 XT (6GB)", puan: 40 },
+        { ad: "AMD Radeon RX 5700 (8GB)", puan: 46 },
+        { ad: "AMD Radeon RX 5700 XT (8GB)", puan: 52 },
+
+        // --- AMD RADEON RX 6000 ---
+        { ad: "AMD Radeon RX 6400 (4GB)", puan: 20 },
+        { ad: "AMD Radeon RX 6500 XT (4GB)", puan: 25 },
+        { ad: "AMD Radeon RX 6600 (8GB)", puan: 50 },
+        { ad: "AMD Radeon RX 6600 XT (8GB)", puan: 55 },
+        { ad: "AMD Radeon RX 6650 XT (8GB)", puan: 58 },
+        { ad: "AMD Radeon RX 6700 (10GB)", puan: 62 },
+        { ad: "AMD Radeon RX 6700 XT (12GB)", puan: 68 },
+        { ad: "AMD Radeon RX 6750 XT (12GB)", puan: 71 },
+        { ad: "AMD Radeon RX 6800 (16GB)", puan: 76 },
+        { ad: "AMD Radeon RX 6800 XT (16GB)", puan: 82 },
+        { ad: "AMD Radeon RX 6900 XT (16GB)", puan: 86 },
+        { ad: "AMD Radeon RX 6950 XT (16GB)", puan: 89 },
+
+        // --- AMD RADEON RX 7000 ---
+        { ad: "AMD Radeon RX 7600 (8GB)", puan: 55 },
+        { ad: "AMD Radeon RX 7600 XT (16GB)", puan: 60 },
+        { ad: "AMD Radeon RX 7700 XT (12GB)", puan: 74 },
+        { ad: "AMD Radeon RX 7800 XT (16GB)", puan: 84 },
+        { ad: "AMD Radeon RX 7900 GRE (16GB)", puan: 88 },
+        { ad: "AMD Radeon RX 7900 XT (20GB)", puan: 92 },
+        { ad: "AMD Radeon RX 7900 XTX (24GB)", puan: 96 },
+
+        // --- AMD RADEON RX 9000 (RDNA 4) ---
+        { ad: "AMD Radeon RX 9050 (8GB GDDR6)", puan: 42 },
+        { ad: "AMD Radeon RX 9060 (8GB GDDR6)", puan: 56 },
+        { ad: "AMD Radeon RX 9060 XT (8GB GDDR6)", puan: 64 },
+        { ad: "AMD Radeon RX 9060 XT (16GB GDDR6)", puan: 66 },
+        { ad: "AMD Radeon RX 9070 GRE (12GB GDDR6)", puan: 78 },
+        { ad: "AMD Radeon RX 9070 (16GB GDDR6)", puan: 85 },
+        { ad: "AMD Radeon RX 9070 XT (16GB GDDR6)", puan: 90 },
+
+        // --- NVIDIA GEFORCE GTX 600 / 700 / 900 ---
+        { ad: "NVIDIA GeForce GTX 660 (2GB)", puan: 8 },
+        { ad: "NVIDIA GeForce GTX 750 Ti (2GB)", puan: 10 },
+        { ad: "NVIDIA GeForce GTX 760 (2GB)", puan: 12 },
+        { ad: "NVIDIA GeForce GTX 780 Ti (3GB)", puan: 18 },
+        { ad: "NVIDIA GeForce GTX 960 (2GB / 4GB)", puan: 15 },
+        { ad: "NVIDIA GeForce GTX 970 (4GB)", puan: 22 },
+        { ad: "NVIDIA GeForce GTX 980 (4GB)", puan: 26 },
+        { ad: "NVIDIA GeForce GTX 980 Ti (6GB)", puan: 32 },
+
+        // --- NVIDIA GEFORCE GTX 10 SERİSİ ---
+        { ad: "NVIDIA GeForce GTX 1050 (2GB)", puan: 12 },
+        { ad: "NVIDIA GeForce GTX 1050 Ti (4GB)", puan: 15 },
+        { ad: "NVIDIA GeForce GTX 1060 (3GB)", puan: 22 },
+        { ad: "NVIDIA GeForce GTX 1060 (6GB)", puan: 26 },
+        { ad: "NVIDIA GeForce GTX 1070 (8GB)", puan: 36 },
+        { ad: "NVIDIA GeForce GTX 1070 Ti (8GB)", puan: 40 },
+        { ad: "NVIDIA GeForce GTX 1080 (8GB)", puan: 45 },
+        { ad: "NVIDIA GeForce GTX 1080 Ti (11GB)", puan: 54 },
+
+        // --- NVIDIA GEFORCE GTX 16 SERİSİ ---
+        { ad: "NVIDIA GeForce GTX 1650 (4GB)", puan: 20 },
+        { ad: "NVIDIA GeForce GTX 1650 Super (4GB)", puan: 26 },
+        { ad: "NVIDIA GeForce GTX 1660 (6GB)", puan: 30 },
+        { ad: "NVIDIA GeForce GTX 1660 Super (6GB)", puan: 34 },
+        { ad: "NVIDIA GeForce GTX 1660 Ti (6GB)", puan: 36 },
+
+        // --- NVIDIA GEFORCE RTX 20 SERİSİ ---
+        { ad: "NVIDIA GeForce RTX 2060 (6GB)", puan: 42 },
+        { ad: "NVIDIA GeForce RTX 2060 (12GB)", puan: 44 },
+        { ad: "NVIDIA GeForce RTX 2060 Super (8GB)", puan: 48 },
+        { ad: "NVIDIA GeForce RTX 2070 (8GB)", puan: 51 },
+        { ad: "NVIDIA GeForce RTX 2070 Super (8GB)", puan: 56 },
+        { ad: "NVIDIA GeForce RTX 2080 (8GB)", puan: 60 },
+        { ad: "NVIDIA GeForce RTX 2080 Super (8GB)", puan: 63 },
+        { ad: "NVIDIA GeForce RTX 2080 Ti (11GB)", puan: 68 },
+
+        // --- NVIDIA GEFORCE RTX 30 SERİSİ ---
+        { ad: "NVIDIA GeForce RTX 3050 (6GB)", puan: 32 },
+        { ad: "NVIDIA GeForce RTX 3050 (8GB)", puan: 38 },
+        { ad: "NVIDIA GeForce RTX 3060 (8GB)", puan: 49 },
+        { ad: "NVIDIA GeForce RTX 3060 (12GB)", puan: 54 },
+        { ad: "NVIDIA GeForce RTX 3060 Ti (8GB)", puan: 64 },
+        { ad: "NVIDIA GeForce RTX 3070 (8GB)", puan: 72 },
+        { ad: "NVIDIA GeForce RTX 3070 Ti (8GB)", puan: 76 },
+        { ad: "NVIDIA GeForce RTX 3080 (10GB)", puan: 84 },
+        { ad: "NVIDIA GeForce RTX 3080 (12GB)", puan: 86 },
+        { ad: "NVIDIA GeForce RTX 3080 Ti (12GB)", puan: 87 },
+        { ad: "NVIDIA GeForce RTX 3090 (24GB)", puan: 88 },
+        { ad: "NVIDIA GeForce RTX 3090 Ti (24GB)", puan: 90 },
+
+        // --- NVIDIA GEFORCE RTX 40 SERİSİ ---
+        { ad: "NVIDIA GeForce RTX 4060 (8GB)", puan: 60 },
+        { ad: "NVIDIA GeForce RTX 4060 Ti (8GB)", puan: 68 },
+        { ad: "NVIDIA GeForce RTX 4060 Ti (16GB)", puan: 70 },
+        { ad: "NVIDIA GeForce RTX 4070 (12GB)", puan: 80 },
+        { ad: "NVIDIA GeForce RTX 4070 Super (12GB)", puan: 86 },
+        { ad: "NVIDIA GeForce RTX 4070 Ti (12GB)", puan: 88 },
+        { ad: "NVIDIA GeForce RTX 4070 Ti Super (16GB)", puan: 90 },
+        { ad: "NVIDIA GeForce RTX 4080 (16GB)", puan: 93 },
+        { ad: "NVIDIA GeForce RTX 4080 Super (16GB)", puan: 94 },
+        { ad: "NVIDIA GeForce RTX 4090 (24GB)", puan: 98 },
+
+        // --- NVIDIA GEFORCE RTX 50 SERİSİ (BLACKWELL) ---
+        { ad: "NVIDIA GeForce RTX 5060 (8GB GDDR7)", puan: 65 },
+        { ad: "NVIDIA GeForce RTX 5060 Ti (8GB GDDR7)", puan: 70 },
+        { ad: "NVIDIA GeForce RTX 5060 Ti (16GB GDDR7)", puan: 72 },
+        { ad: "NVIDIA GeForce RTX 5070 (12GB GDDR7)", puan: 82 },
+        { ad: "NVIDIA GeForce RTX 5070 Ti (16GB GDDR7)", puan: 88 },
+        { ad: "NVIDIA GeForce RTX 5080 (16GB GDDR7)", puan: 93 },
+        { ad: "NVIDIA GeForce RTX 5090 (32GB GDDR7)", puan: 100 }
+    ];
+
+    window.onload = function() {
+        datalistDoldur('cpuList', islemciler);
+        datalistDoldur('gpuList', ekranKartlari);
+    };
+
+    function datalistDoldur(listId, veriler) {
+        const list = document.getElementById(listId);
+        list.innerHTML = "";
+        veriler.sort((a, b) => a.ad.localeCompare(b.ad));
+
+        veriler.forEach(item => {
+            let opt = document.createElement('option');
+            opt.value = item.ad;
+            list.appendChild(opt);
+        });
+    }
+
+    function sistemHesapla() {
+        let cpuAd = document.getElementById('cpuInput').value.trim();
+        let gpuAd = document.getElementById('gpuInput').value.trim();
+
+        let cpuObj = islemciler.find(i => i.ad.toLowerCase() === cpuAd.toLowerCase());
+        let gpuObj = ekranKartlari.find(g => g.ad.toLowerCase() === gpuAd.toLowerCase());
+
+        if (!cpuObj || !gpuObj) {
+            alert("Lütfen öneri listesinden geçerli bir İşlemci ve Ekran Kartı seçiniz!");
+            return;
+        }
+
+        let cpuPuan = cpuObj.puan;
+        let gpuPuan = gpuObj.puan;
+        let ram = parseInt(document.getElementById('ramSelect').value);
+        let cozunurluk = document.getElementById('cozunurlukSelect').value;
+
+        let etkiGpu = gpuPuan;
+        if (cozunurluk === "2k") etkiGpu *= 0.85;
+        if (cozunurluk === "4k") etkiGpu *= 0.70;
+
+        let fark = cpuPuan - etkiGpu;
+        let darbogazMetni = "", oneriMetni = "";
+
+        if (fark > 15) {
+            let yuzde = Math.min(Math.round(fark), 60);
+            darbogazMetni = `<span class="text-warning">%${yuzde} Ekran Kartı Darboğazı</span>`;
+            oneriMetni = `⚠️ <strong>Öneri:</strong> İşlemciniz oldukça güçlü. Ekran kartınızı bir üst modele yükselterek tam performans elde edebilirsiniz.`;
+        } else if (fark < -15) {
+            let yuzde = Math.min(Math.round(Math.abs(fark)), 60);
+            darbogazMetni = `<span class="text-danger">%${yuzde} İşlemci Darboğazı</span>`;
+            oneriMetni = `🔴 <strong>Öneri:</strong> Ekran kartınız yüksek performanslı ancak işlemciniz yetersiz kalıyor. Oyunlarda anlık takılmalar önlemek için işlemciyi yükseltmeniz önerilir.`;
+        } else {
+            darbogazMetni = `<span class="text-success">Darboğaz Yok</span>`;
+            oneriMetni = `✅ <strong>Öneri:</strong> Parçalarınız birbiriyle son derece dengeli çalışıyor!`;
+        }
+
+        let fps = Math.round(((cpuPuan + gpuPuan) * 0.95) * (cozunurluk === "2k" ? 0.75 : cozunurluk === "4k" ? 0.50 : 1) + (ram >= 16 ? 10 : 0));
+        let sistemPuani = Math.round((cpuPuan + gpuPuan) / 2);
+
+        document.getElementById('darbogazMetni').innerHTML = darbogazMetni;
+        document.getElementById('fpsMetni').innerText = fps;
+        document.getElementById('puanMetni').innerText = sistemPuani;
+        document.getElementById('oneriMetni').innerHTML = oneriMetni;
+
+        let toplam = cpuPuan + gpuPuan;
+        let cpuYuzde = Math.round((cpuPuan / toplam) * 100);
+        document.getElementById('cpuBar').style.width = cpuYuzde + "%";
+        document.getElementById('cpuBar').innerText = "CPU %" + cpuYuzde;
+        document.getElementById('gpuBar').style.width = (100 - cpuYuzde) + "%";
+        document.getElementById('gpuBar').innerText = "GPU %" + (100 - cpuYuzde);
+
+        document.getElementById('sonucAlani').classList.remove('d-none');
+    }
+</script>
+
+</body>
+</html>
