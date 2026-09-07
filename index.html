@@ -531,6 +531,30 @@
       </div>
     </div>
   </div>
-
+<!-- AUTOMATIC AFFILIATE BUTTONS INJECTOR -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Sihirbaz veya sistem kartlarını otomatik bulup butonları ekler
+    const observer = new MutationObserver(function() {
+      const cards = document.querySelectorAll('.card, .system-card, [class*="card"]');
+      cards.forEach(card => {
+        if (!card.querySelector('.affiliate-buttons') && card.innerText.length > 20) {
+          const btnDiv = document.createElement('div');
+          btnDiv.className = 'affiliate-buttons mt-3 pt-3 border-top border-secondary text-center';
+          btnDiv.innerHTML = `
+            <p class="small text-muted mb-2"><i class="bi bi-cart-check"></i> En Uygun Fiyatla İncele:</p>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+              <a href="https://www.hepsiburada.com" target="_blank" rel="sponsored nofollow" class="btn btn-outline-warning btn-sm fw-bold">Hepsiburada</a>
+              <a href="https://www.amazon.com.tr" target="_blank" rel="sponsored nofollow" class="btn btn-outline-light btn-sm fw-bold">Amazon</a>
+              <a href="https://www.trendyol.com" target="_blank" rel="sponsored nofollow" class="btn btn-outline-danger btn-sm fw-bold">Trendyol</a>
+            </div>
+          `;
+          card.appendChild(btnDiv);
+        }
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+</script>
 </body>
 </html>
