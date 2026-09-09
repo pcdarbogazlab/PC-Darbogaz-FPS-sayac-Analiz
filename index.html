@@ -57,7 +57,7 @@
       </a>
       <nav class="nav-links" aria-label="Ana menü">
         <a href="#analyze">Analiz</a>
-        <a href="#compare">GPU Karşılaştır</a>
+        <a href="#compare">Karşılaştırmalar</a>
         <a href="#builder">Sistem Topla</a>
         <a href="#method">Nasıl Çalışır?</a>
       </nav>
@@ -181,38 +181,55 @@
     <section class="section shell" id="compare">
       <div class="section-heading">
         <div>
-          <span class="eyebrow">GPU KARŞILAŞTIRMA</span>
-          <h2>İki ekran kartını nedenleriyle karşılaştır.</h2>
+          <span class="eyebrow">DONANIM KARŞILAŞTIRMA</span>
+          <h2>CPU, GPU ve anakartları nedenleriyle karşılaştır.</h2>
         </div>
-        <p>Teorik kapasiteyi, normalize edilmiş performans endeksini ve oyun profiline göre tahmini FPS farkını birlikte gösteriyoruz.</p>
+        <p>Tek bir puan yerine performans, teknik özellik, kullanım senaryosu ve yükseltme potansiyelini birlikte değerlendir.</p>
       </div>
 
-      <div class="compare-card">
-        <div class="compare-controls">
-          <label>1. ekran kartı
-            <select id="compareGpuA"></select>
-          </label>
-          <label>2. ekran kartı
-            <select id="compareGpuB"></select>
-          </label>
-          <label>Oyun profili
-            <select id="compareGame"></select>
-          </label>
-          <button type="button" id="compareBtn" class="primary-btn">Karşılaştır</button>
-        </div>
+      <div class="compare-tabs" role="tablist" aria-label="Karşılaştırma türü">
+        <button class="compare-tab active" type="button" data-compare-tab="gpu">GPU</button>
+        <button class="compare-tab" type="button" data-compare-tab="cpu">CPU</button>
+        <button class="compare-tab" type="button" data-compare-tab="motherboard">Anakart</button>
+      </div>
 
-        <div id="compareOutput" class="compare-output" aria-live="polite">
-          <div class="compare-empty">
-            <span>⇄</span>
-            <strong>İki GPU seç ve karşılaştır.</strong>
-            <p>Sonuçta hangi kartın neden önde olduğunu, VRAM farkını ve 1080p / 1440p / 4K tahminlerini göreceksin.</p>
+      <div class="compare-panel active" data-compare-panel="gpu">
+        <div class="compare-card">
+          <div class="compare-controls">
+            <label>1. ekran kartı<select id="compareGpuA"></select></label>
+            <label>2. ekran kartı<select id="compareGpuB"></select></label>
+            <label>Oyun profili<select id="compareGame"></select></label>
+            <button type="button" id="compareBtn" class="primary-btn">GPU karşılaştır</button>
           </div>
+          <div id="compareOutput" class="compare-output" aria-live="polite"></div>
+          <p class="fineprint compare-disclaimer">Performans endeksi PC Darboğaz Lab içindeki normalize edilmiş karşılaştırma skorudur; tek bir bağımsız benchmark sonucu değildir. FPS değerleri yaklaşık karşılaştırma amaçlıdır.</p>
         </div>
+      </div>
 
-        <p class="fineprint compare-disclaimer">
-          “Performans endeksi” PC Darboğaz Lab içindeki normalize edilmiş bileşik skordur; tek bir 3DMark/oyun benchmark sonucu değildir.
-          FPS değerleri karşılaştırma amaçlı tahmindir ve gerçek sistem, sürücü, oyun sürümü ve ayarlara göre değişebilir.
-        </p>
+      <div class="compare-panel" data-compare-panel="cpu">
+        <div class="compare-card">
+          <div class="compare-controls cpu-controls">
+            <label>1. işlemci<select id="compareCpuA"></select></label>
+            <label>2. işlemci<select id="compareCpuB"></select></label>
+            <label>Kullanım<select id="compareCpuMode"><option value="gaming">Oyun</option><option value="multi">Çok çekirdek / üretkenlik</option><option value="balanced">Genel kullanım</option></select></label>
+            <button type="button" id="compareCpuBtn" class="primary-btn">CPU karşılaştır</button>
+          </div>
+          <div id="compareCpuOutput" class="compare-output" aria-live="polite"></div>
+          <p class="fineprint compare-disclaimer">CPU oyun ve çok çekirdek endeksleri site içi normalize edilmiş kıyas skorlarıdır. Gerçek sonuç; oyun, yazılım, güç limiti, soğutma ve RAM ayarlarına göre değişebilir.</p>
+        </div>
+      </div>
+
+      <div class="compare-panel" data-compare-panel="motherboard">
+        <div class="compare-card">
+          <div class="compare-controls board-controls">
+            <label>1. anakart<select id="compareBoardA"></select></label>
+            <label>2. anakart<select id="compareBoardB"></select></label>
+            <label>Öncelik<select id="compareBoardMode"><option value="balanced">Genel / F-P</option><option value="vrm">Güçlü CPU / VRM</option><option value="upgrade">Yükseltme ömrü</option><option value="features">Bağlantı / özellik</option></select></label>
+            <button type="button" id="compareBoardBtn" class="primary-btn">Anakart karşılaştır</button>
+          </div>
+          <div id="compareBoardOutput" class="compare-output" aria-live="polite"></div>
+          <p class="fineprint compare-disclaimer">Anakartlarda “FPS benchmark kazananı” göstermek doğru değildir. Karşılaştırma VRM, platform, bellek, PCIe/M.2, Wi‑Fi, hız aşırtma ve yükseltme potansiyeline dayanır.</p>
+        </div>
       </div>
     </section>
 
