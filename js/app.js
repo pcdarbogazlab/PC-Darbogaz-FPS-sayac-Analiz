@@ -7,7 +7,17 @@
     D.cpus.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('cpuList').appendChild(o)});
     D.gpus.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('gpuList').appendChild(o)});
     D.games.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;$('gameSelect').appendChild(o)});
+
+    D.gpus.forEach((x,i)=>{
+      const a=document.createElement('option');a.value=String(i);a.textContent=x.name;$('compareGpuA').appendChild(a);
+      const b=document.createElement('option');b.value=String(i);b.textContent=x.name;$('compareGpuB').appendChild(b);
+    });
+    D.games.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;$('compareGame').appendChild(o)});
+
     $('gameSelect').value='general';
+    $('compareGame').value='general';
+    $('compareGpuA').value=String(Math.max(0,D.gpus.findIndex(g=>g.name.includes('RTX 4060 Ti'))));
+    $('compareGpuB').value=String(Math.max(0,D.gpus.findIndex(g=>g.name.includes('RTX 5070'))));
   }
 
   function findExact(list, value){return list.find(x=>x.name.toLocaleLowerCase('tr')===value.trim().toLocaleLowerCase('tr'))}
@@ -73,6 +83,115 @@
     });
   }
 
+
+  function gpuTier(score){
+    if(score>=92) return 'Üst seviye';
+    if(score>=78) return 'Yüksek performans';
+    if(score>=60) return 'Orta-üst seviye';
+    if(score>=45) return 'Orta seviye';
+    return 'Giriş seviyesi';
+  }
+
+  function compareFps(gpu,game,res){
+    const resFactor={1080:1,1440:.72,2160:.43}[res];
+    const gpuNorm=clamp(gpu.score/80,.38,1.34);
+    // Sabit, güçlü bir CPU varsayımıyla GPU farkını öne çıkar.
+    let fps=Math.round(game.base*resFactor*Math.pow(gpuNorm,game.gpu));
+    if(gpu.vram<game.vram && res!=='1080') fps=Math.round(fps*.90);
+    return Math.max(20,fps);
+  }
+
+  function pctDiff(a,b){
+    if(!a && !b) return 0;
+    return ((b-a)/Math.max(a,1))*100;
+  }
+
+  function compareGpus(){
+    const a=D.gpus[Number($('compareGpuA').value)];
+    const b=D.gpus[Number($('compareGpuB').value)];
+    const game=D.games.find(g=>g.id===$('compareGame').value) || D.games[0];
+    if(!a || !b) return;
+
+    const scoreDelta=pctDiff(a.score,b.score);
+    const absScore=Math.abs(scoreDelta);
+    const winner=scoreDelta>2?b:scoreDelta<-2?a:null;
+    const loser=winner?(winner===a?b:a):null;
+    const winnerSide=winner===a?'A':winner===b?'B':'';
+
+    const reasonsA=[];
+    const reasonsB=[];
+
+    if(a.score>b.score+2) reasonsA.push(`Bileşik performans endeksi yaklaşık %${Math.round(Math.abs(pctDiff(b.score,a.score)))} daha yüksek.`);
+    if(b.score>a.score+2) reasonsB.push(`Bileşik performans endeksi yaklaşık %${Math.round(Math.abs(pctDiff(a.score,b.score)))} daha yüksek.`);
+
+    if(a.vram>b.vram) reasonsA.push(`${a.vram} GB VRAM ile ${b.vram} GB modele göre daha fazla bellek alanı sunuyor.`);
+    if(b.vram>a.vram) reasonsB.push(`${b.vram} GB VRAM ile ${a.vram} GB modele göre daha fazla bellek alanı sunuyor.`);
+
+    if(a.vram>=game.vram && b.vram<game.vram) reasonsA.push(`${game.name} profilindeki ${game.vram} GB VRAM hedefini karşılıyor.`);
+    if(b.vram>=game.vram && a.vram<game.vram) reasonsB.push(`${game.name} profilindeki ${game.vram} GB VRAM hedefini karşılıyor.`);
+
+    if(!reasonsA.length) reasonsA.push('Bu eşleşmede belirgin bir teorik üstünlük görünmüyor; avantaj oyun ve ayara göre değişebilir.');
+    if(!reasonsB.length) reasonsB.push('Bu eşleşmede belirgin bir teorik üstünlük görünmüyor; avantaj oyun ve ayara göre değişebilir.');
+
+    const fpsRows=['1080','1440','2160'].map(res=>{
+      const fa=compareFps(a,game,res), fb=compareFps(b,game,res);
+      const d=pctDiff(fa,fb);
+      const cls=Math.abs(d)<3?'delta-flat':d>0?'delta-up':'delta-down';
+      const sign=d>0?'+':'';
+      return `<tr><td>${res==='1080'?'1080p':res==='1440'?'1440p':'4K'}</td><td>${fa} FPS</td><td>${fb} FPS</td><td class="${cls}">${sign}${Math.round(d)}%</td></tr>`;
+    }).join('');
+
+    let verdictTitle='Çok yakın performans';
+    let verdictText=`${a.name} ve ${b.name} bu modelde birbirine yakın sınıfta. Oyun motoru, çözünürlük ve VRAM kullanımı sonucu değiştirebilir.`;
+    if(winner){
+      verdictTitle=`${winner.name} genel olarak önde`;
+      verdictText=`Normalize edilmiş performans endeksi ve ${game.name} profiline göre ${winner.name}, ${loser.name} karşısında daha güçlü seçenek görünüyor. Farkın büyüklüğü oyuna ve çözünürlüğe göre değişir.`;
+    }
+
+    $('compareOutput').innerHTML=`
+      <div class="compare-head">
+        <div class="gpu-name-card"><span>GPU A</span><strong>${a.name}</strong><small>${gpuTier(a.score)} • ${a.vram} GB VRAM</small></div>
+        <div class="vs-badge">VS</div>
+        <div class="gpu-name-card right"><span>GPU B</span><strong>${b.name}</strong><small>${gpuTier(b.score)} • ${b.vram} GB VRAM</small></div>
+      </div>
+
+      <div class="compare-verdict">
+        <b>Genel yorum</b>
+        <h3>${verdictTitle}</h3>
+        <p>${verdictText}</p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-metric">
+          <span>Performans endeksi</span>
+          <div class="metric-row"><strong>${a.score}</strong><i>vs</i><strong>${b.score}</strong></div>
+        </div>
+        <div class="compare-metric">
+          <span>VRAM</span>
+          <div class="metric-row"><strong>${a.vram} GB</strong><i>vs</i><strong>${b.vram} GB</strong></div>
+        </div>
+        <div class="compare-metric">
+          <span>Sınıf</span>
+          <div class="metric-row"><strong>${gpuTier(a.score)}</strong><i>vs</i><strong>${gpuTier(b.score)}</strong></div>
+        </div>
+      </div>
+
+      <div class="compare-reasons">
+        <div class="reason-box"><h4>${a.name} neden tercih edilebilir?</h4><ul>${reasonsA.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="reason-box"><h4>${b.name} neden tercih edilebilir?</h4><ul>${reasonsB.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      </div>
+
+      <div class="fps-compare">
+        <h4>${game.name} • Tahmini FPS karşılaştırması</h4>
+        <table class="fps-table">
+          <thead><tr><th>Çözünürlük</th><th>${a.name}</th><th>${b.name}</th><th>B'nin A'ya farkı</th></tr></thead>
+          <tbody>${fpsRows}</tbody>
+        </table>
+      </div>
+    `;
+  }
+
+
   function build(){
     const tier=$('budgetTier').value,use=$('buildUse').value,parts=D.builds[use][tier];
     const labels=['CPU','GPU','RAM','Depolama','Anakart','PSU'];
@@ -81,6 +200,8 @@
 
   fillLists();
   $('analysisForm').addEventListener('submit',analyze);
+  $('compareBtn').addEventListener('click',compareGpus);
   $('buildBtn').addEventListener('click',build);
+  compareGpus();
   build();
 })();
