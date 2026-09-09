@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/sitemap.xml
