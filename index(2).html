@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PC Darboğaz Lab | CPU GPU Uyumu, FPS Tahmini ve Sistem Önerisi</title>
+  <meta name="description" content="CPU ve GPU uyumunu senaryo bazlı analiz edin, 1080p/1440p/4K için oyun FPS tahmini alın ve bütçenize göre PC önerileri oluşturun." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="theme-color" content="#07111f" />
+  <link rel="canonical" href="https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:title" content="PC Darboğaz Lab" />
+  <meta property="og:description" content="CPU–GPU uyumu, oyun bazlı FPS tahmini ve akıllı sistem önerileri." />
+  <meta property="og:url" content="https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/" />
+  <meta property="og:image" content="https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="PC Darboğaz Lab logosu" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PC Darboğaz Lab" />
+  <meta name="twitter:description" content="CPU–GPU uyumu, oyun bazlı FPS tahmini ve akıllı sistem önerileri." />
+  <meta name="twitter:image" content="https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/assets/og-image.png" />
+
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PC Darboğaz Lab",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "tr-TR",
+    "url": "https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/",
+    "image": "https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/assets/og-image.png",
+    "description": "CPU-GPU uyumu, FPS tahmini ve sistem önerisi aracı."
+  }
+  </script>
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="shell nav-wrap">
+      <a class="brand" href="#top" aria-label="PC Darboğaz Lab ana sayfa">
+        <span class="brand-mark">PC</span>
+        <span><strong>Darboğaz</strong><em>Lab</em></span>
+      </a>
+      <nav class="nav-links" aria-label="Ana menü">
+        <a href="#analyze">Analiz</a>
+        <a href="#builder">Sistem Topla</a>
+        <a href="#method">Nasıl Çalışır?</a>
+      </nav>
+      <a class="ghost-btn" href="#analyze">Analize başla</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <span class="eyebrow">PC DONANIM ANALİZİ • TÜRKÇE</span>
+        <h1>Sistemin dengeli mi?<br /><span>Rakamdan fazlasını gör.</span></h1>
+        <p>CPU ve GPU eşleşmesini kullanım senaryosuna göre incele; oyun bazlı FPS tahmini, RAM/VRAM kontrolü ve yükseltme önerisi al.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#analyze">Sistemi analiz et</a>
+          <a class="text-btn" href="#builder">Bütçeye göre sistem oluştur →</a>
+        </div>
+        <div class="trust-row" aria-label="Öne çıkan özellikler">
+          <span>✓ 1080p / 1440p / 4K</span>
+          <span>✓ Oyun bazlı tahmin</span>
+          <span>✓ Yükseltme önerisi</span>
+        </div>
+      </div>
+      <div class="hero-panel" aria-label="Örnek performans kartı">
+        <div class="panel-head">
+          <span class="live-dot"></span>
+          <span>Örnek analiz</span>
+          <small>1440p • AAA</small>
+        </div>
+        <div class="score-ring" style="--score: 88">
+          <div><strong>88</strong><span>/100</span><small>Denge puanı</small></div>
+        </div>
+        <div class="mini-bars">
+          <div><span>CPU uyumu</span><b>92%</b><i><u style="width:92%"></u></i></div>
+          <div><span>GPU uyumu</span><b>87%</b><i><u style="width:87%"></u></i></div>
+          <div><span>RAM yeterliliği</span><b>100%</b><i><u style="width:100%"></u></i></div>
+        </div>
+        <div class="panel-note">Dengeli sistem • GPU tarafı hedef çözünürlük için güçlü.</div>
+      </div>
+    </section>
+
+    <section class="section shell" id="analyze">
+      <div class="section-heading">
+        <div><span class="eyebrow">DARBOĞAZ & FPS ANALİZİ</span><h2>Sistemini gir, senaryoyu seç.</h2></div>
+        <p>Tek bir “darboğaz yüzdesi” yerine, parçaların hedef kullanımda birbirini ne kadar sınırladığını sınıflandırıyoruz.</p>
+      </div>
+
+      <div class="workspace">
+        <form id="analysisForm" class="control-card" autocomplete="off">
+          <div class="form-grid">
+            <label>İşlemci (CPU)
+              <input id="cpuInput" list="cpuList" placeholder="Örn. Ryzen 7 5700X" required />
+              <datalist id="cpuList"></datalist>
+            </label>
+            <label>Ekran kartı (GPU)
+              <input id="gpuInput" list="gpuList" placeholder="Örn. RTX 4060 Ti 8GB" required />
+              <datalist id="gpuList"></datalist>
+            </label>
+            <label>RAM
+              <select id="ramSelect">
+                <option value="8">8 GB</option>
+                <option value="16" selected>16 GB</option>
+                <option value="32">32 GB</option>
+                <option value="64">64 GB</option>
+              </select>
+            </label>
+            <label>Çözünürlük
+              <select id="resolutionSelect">
+                <option value="1080">1080p</option>
+                <option value="1440" selected>1440p</option>
+                <option value="2160">4K</option>
+              </select>
+            </label>
+            <label>Kullanım senaryosu
+              <select id="scenarioSelect">
+                <option value="esports">E-spor / yüksek FPS</option>
+                <option value="balanced" selected>Dengeli oyun</option>
+                <option value="aaa">AAA / yüksek grafik</option>
+                <option value="creator">Render / içerik üretimi</option>
+              </select>
+            </label>
+            <label>FPS tahmini için oyun
+              <select id="gameSelect"></select>
+            </label>
+          </div>
+          <button class="primary-btn wide" type="submit">Analizi çalıştır</button>
+          <p class="fineprint">Sonuçlar yaklaşık karşılaştırma modelidir; oyun sürümü, sürücü, sıcaklık, RAM hızı ve grafik ayarları gerçek performansı değiştirebilir.</p>
+        </form>
+
+        <div id="resultCard" class="result-card is-empty" aria-live="polite">
+          <div class="empty-state">
+            <div class="empty-icon">⌁</div>
+            <h3>Analiz sonucu burada görünecek</h3>
+            <p>CPU, GPU ve senaryoyu seçip analizi çalıştır.</p>
+          </div>
+          <div class="result-content" hidden>
+            <div class="result-top">
+              <div>
+                <span class="status-pill" id="statusPill">Dengeli</span>
+                <h3 id="resultTitle">Sistem Analizi</h3>
+                <p id="resultSummary"></p>
+              </div>
+              <div class="score-box"><strong id="balanceScore">0</strong><span>/100</span><small>Denge</small></div>
+            </div>
+            <div class="metric-grid">
+              <div><span>Tahmini FPS</span><strong id="fpsValue">—</strong><small id="fpsRange">—</small></div>
+              <div><span>CPU tarafı</span><strong id="cpuFit">—</strong><small id="cpuLabel">—</small></div>
+              <div><span>GPU tarafı</span><strong id="gpuFit">—</strong><small id="gpuLabel">—</small></div>
+              <div><span>Bellek</span><strong id="ramFit">—</strong><small id="ramLabel">—</small></div>
+            </div>
+            <div class="balance-track" aria-label="CPU GPU denge göstergesi">
+              <span>CPU sınırlı</span><div><i id="balanceMarker"></i></div><span>GPU sınırlı</span>
+            </div>
+            <div class="advice-box"><b>Yükseltme notu</b><p id="adviceText"></p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="builder">
+      <div class="section-heading">
+        <div><span class="eyebrow">AKILLI SİSTEM ÖNERİSİ</span><h2>Bütçene ve kullanımına göre başlangıç noktası.</h2></div>
+        <p>Fiyatlar mağazalara göre hızla değiştiği için burada sabit TL fiyatı vermek yerine bütçe sınıfı ve parça dengesi öneriyoruz.</p>
+      </div>
+      <div class="builder-card">
+        <div class="builder-controls">
+          <label>Bütçe seviyesi
+            <select id="budgetTier">
+              <option value="entry">Giriş / F-P</option>
+              <option value="mid" selected>Orta / Dengeli</option>
+              <option value="high">Yüksek / Performans</option>
+            </select>
+          </label>
+          <label>Ana kullanım
+            <select id="buildUse">
+              <option value="gaming" selected>Oyun</option>
+              <option value="office">Ofis / günlük</option>
+              <option value="creator">Render / video</option>
+            </select>
+          </label>
+          <button type="button" id="buildBtn" class="secondary-btn">Sistem öner</button>
+        </div>
+        <div id="buildOutput" class="build-output"></div>
+      </div>
+    </section>
+
+    <section class="section shell" id="method">
+      <div class="section-heading compact"><div><span class="eyebrow">YÖNTEM</span><h2>Nasıl hesaplıyoruz?</h2></div></div>
+      <div class="feature-grid">
+        <article><span>01</span><h3>Göreli performans</h3><p>CPU ve GPU'yu aynı puanın kopyası gibi değil, senaryoya göre farklı ağırlıklarla değerlendiriyoruz.</p></article>
+        <article><span>02</span><h3>Çözünürlük etkisi</h3><p>1080p'de CPU hassasiyeti, 4K'da GPU yükü daha yüksek olacak şekilde model değişiyor.</p></article>
+        <article><span>03</span><h3>Oyun profili</h3><p>FPS değeri oyun profiline, çözünürlüğe ve seçilen ekran kartı sınıfına göre aralık olarak veriliyor.</p></article>
+        <article><span>04</span><h3>Temkinli sonuç</h3><p>“Kesin %37 darboğaz” gibi yanıltıcı ifadeler yerine sınırlayıcı tarafı ve yükseltme önceliğini gösteriyoruz.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div><a class="brand" href="#top"><span class="brand-mark">PC</span><span><strong>Darboğaz</strong><em>Lab</em></span></a><p>Donanım seçiminde daha anlaşılır karşılaştırmalar.</p></div>
+      <div><strong>Uyarı</strong><p>FPS ve uyumluluk sonuçları tahminidir; profesyonel benchmark ölçümü yerine geçmez.</p></div>
+      <div><strong>© 2026 PC Darboğaz Lab</strong><p>GitHub Pages üzerinde çalışan statik sürüm.</p></div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
