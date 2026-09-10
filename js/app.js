@@ -1,5 +1,11 @@
 (() => {
   const D = window.PCDL_DATA;
+  const benchCountEl=document.getElementById('benchGpuCount');
+  if(benchCountEl){
+    const n=Object.keys(window.PCDB_BENCH?.gpu||{}).length;
+    benchCountEl.textContent=`${n} ekran kartında kaynaklı raster benchmark verisi`;
+  }
+
   const $ = id => document.getElementById(id);
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
 
@@ -249,6 +255,67 @@
     return ((b-a)/Math.max(a,1))*100;
   }
 
+  function shortGpuName(name){
+    return name
+      .replace('NVIDIA GeForce ','')
+      .replace('AMD Radeon ','')
+      .replace('Intel Arc ','Arc ');
+  }
+
+  function renderRealGpuRows(a,b){
+    const db=window.PCDB_BENCH?.gpu||{};
+    const ba=db[a.name], bb=db[b.name];
+
+    if(!ba || !bb){
+      return {
+        available:false,
+        html:`<div class="result-panel real-panel unavailable-panel">
+          <div class="result-panel-head">
+            <div><span class="result-kicker real-kicker">GERÇEK BENCHMARK SONUCU</span><h4>Kaynaklı test verisi bulunamadı</h4></div>
+            <span class="status-tag muted-tag">VERİ YOK</span>
+          </div>
+          <p class="panel-desc">Seçtiğin iki ekran kartının ikisi de kaynak veri setinde olmadığı için gerçek test tablosu gösterilemiyor. Tahmini sonuç solda kullanılabilir.</p>
+        </div>`
+      };
+    }
+
+    const rows=[
+      ['1080p Ultra','p1080'],
+      ['1440p Ultra','p1440'],
+      ['4K Ultra','p4k']
+    ].map(([label,key])=>{
+      const av=ba.raster[key], bv=bb.raster[key];
+      const d=((bv-av)/Math.max(av,1))*100;
+      let adv='<span class="perf-close">≈ Eşit</span>';
+      if(Math.abs(d)>=1){
+        const winner=d>0?b:a;
+        adv=`<span class="perf-winner">🏆 ${shortGpuName(winner.name)} ↑ +%${Math.round(Math.abs(d))}</span>`;
+      }
+      return `<tr><td>${label}</td><td>${av.toFixed(1)} FPS</td><td>${bv.toFixed(1)} FPS</td><td>${adv}</td></tr>`;
+    }).join('');
+
+    return {
+      available:true,
+      html:`<div class="result-panel real-panel">
+        <div class="result-panel-head">
+          <div><span class="result-kicker real-kicker">GERÇEK BENCHMARK SONUCU</span><h4>Harici kaynaklı raster test ortalaması</h4></div>
+          <span class="status-tag beta-tag">BETA</span>
+        </div>
+        <p class="panel-desc">Tom's Hardware 2026 GPU Hierarchy verilerinden alınan gerçek test sonuçlarıdır.</p>
+        <div class="table-wrap">
+          <table class="fps-table modern-table">
+            <thead><tr><th>Çözünürlük</th><th>${shortGpuName(a.name)}</th><th>${shortGpuName(b.name)}</th><th>Performans farkı</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="source-row">
+          <div><strong>🔗 Kaynak: Tom's Hardware GPU Hierarchy 2026</strong><small>Raster performans ortalaması • yükseltme teknolojilerinden bağımsız karşılaştırma</small></div>
+          <a href="${window.PCDB_BENCH?.meta?.gpuSourceUrl||'#'}" target="_blank" rel="noopener">Kaynağı görüntüle ↗</a>
+        </div>
+      </div>`
+    };
+  }
+
   function compareGpus(){
     const a=D.gpus[Number($('compareGpuA').value)];
     const b=D.gpus[Number($('compareGpuB').value)];
@@ -256,25 +323,16 @@
     if(!a || !b) return;
 
     const scoreDelta=pctDiff(a.score,b.score);
-    const absScore=Math.abs(scoreDelta);
     const winner=scoreDelta>2?b:scoreDelta<-2?a:null;
     const loser=winner?(winner===a?b:a):null;
-    const winnerSide=winner===a?'A':winner===b?'B':'';
 
-    const reasonsA=[];
-    const reasonsB=[];
-
+    const reasonsA=[], reasonsB=[];
     if(a.score>b.score+2) reasonsA.push(`Bileşik performans endeksi yaklaşık %${Math.round(Math.abs(pctDiff(b.score,a.score)))} daha yüksek.`);
     if(b.score>a.score+2) reasonsB.push(`Bileşik performans endeksi yaklaşık %${Math.round(Math.abs(pctDiff(a.score,b.score)))} daha yüksek.`);
-
     if(a.vram>b.vram) reasonsA.push(`${a.vram} GB VRAM ile ${b.vram} GB modele göre daha fazla bellek alanı sunuyor.`);
     if(b.vram>a.vram) reasonsB.push(`${b.vram} GB VRAM ile ${a.vram} GB modele göre daha fazla bellek alanı sunuyor.`);
-
-    if(a.vram>=game.vram && b.vram<game.vram) reasonsA.push(`${game.name} profilindeki ${game.vram} GB VRAM hedefini karşılıyor.`);
-    if(b.vram>=game.vram && a.vram<game.vram) reasonsB.push(`${game.name} profilindeki ${game.vram} GB VRAM hedefini karşılıyor.`);
-
-    if(!reasonsA.length) reasonsA.push('Bu eşleşmede belirgin bir teorik üstünlük görünmüyor; avantaj oyun ve ayara göre değişebilir.');
-    if(!reasonsB.length) reasonsB.push('Bu eşleşmede belirgin bir teorik üstünlük görünmüyor; avantaj oyun ve ayara göre değişebilir.');
+    if(!reasonsA.length) reasonsA.push('Bu eşleşmede belirgin teorik üstünlük görünmüyor; fiyat ve oyun profili daha belirleyici olabilir.');
+    if(!reasonsB.length) reasonsB.push('Bu eşleşmede belirgin teorik üstünlük görünmüyor; fiyat ve oyun profili daha belirleyici olabilir.');
 
     const fpsRows=['1080','1440','2160'].map(res=>{
       const fa=compareFps(a,game,res), fb=compareFps(b,game,res);
@@ -282,62 +340,72 @@
       let advantage='<span class="perf-close">≈ Eşit</span>';
       if(Math.abs(d)>=3){
         const rowWinner=d>0?b:a;
-        const shortName=rowWinner.name.replace('NVIDIA GeForce ','').replace('AMD Radeon ','').replace('Intel Arc ','');
-        advantage=`<span class="perf-winner">🏆 ${shortName} <b>+%${Math.round(Math.abs(d))}</b></span>`;
+        advantage=`<span class="perf-winner">🏆 ${shortGpuName(rowWinner.name)} ↑ +%${Math.round(Math.abs(d))}</span>`;
       }
       return `<tr><td>${res==='1080'?'1080p':res==='1440'?'1440p':'4K'}</td><td>${fa} FPS</td><td>${fb} FPS</td><td>${advantage}</td></tr>`;
     }).join('');
 
-    let verdictTitle='Çok yakın performans';
-    let verdictText=`${a.name} ve ${b.name} bu modelde birbirine yakın sınıfta. Oyun motoru, çözünürlük ve VRAM kullanımı sonucu değiştirebilir.`;
-    if(winner){
-      verdictTitle=`🏆 ${winner.name} önde`;
-      verdictText=`Normalize edilmiş performans endeksi ve ${game.name} profiline göre ${winner.name}, ${loser.name} karşısında daha güçlü seçenek görünüyor. Aşağıdaki tabloda her çözünürlükte kazanan kart ve yüzde avantajı doğrudan gösteriliyor.`;
-    }
+    const verdict = winner
+      ? `<strong>🏆 ${shortGpuName(winner.name)} önde</strong><span>${game.name} profilinde site içi endekse göre ${shortGpuName(winner.name)}, ${shortGpuName(loser.name)} karşısında daha güçlü görünüyor.</span>`
+      : `<strong>≈ Performansları yakın</strong><span>İki ekran kartı site içi modelde birbirine yakın seviyede.</span>`;
+
+    const real=renderRealGpuRows(a,b);
 
     $('compareOutput').innerHTML=`
-      <div class="compare-head">
-        <div class="gpu-name-card"><span>GPU A</span><strong>${a.name}</strong><small>${gpuTier(a.score)} • ${a.vram} GB VRAM</small></div>
-        <div class="vs-badge">VS</div>
-        <div class="gpu-name-card right"><span>GPU B</span><strong>${b.name}</strong><small>${gpuTier(b.score)} • ${b.vram} GB VRAM</small></div>
-      </div>
-
-      <div class="compare-verdict">
-        <b>Genel yorum</b>
-        <h3>${verdictTitle}</h3>
-        <p>${verdictText}</p>
-      </div>
-
-      <div class="compare-grid">
-        <div class="compare-metric">
-          <span>Performans endeksi</span>
-          <div class="metric-row"><strong>${a.score}</strong><i>vs</i><strong>${b.score}</strong></div>
+      <div class="gpu-versus-grid">
+        <div class="gpu-showcase-card">
+          <span class="gpu-label">GPU A</span>
+          <div class="gpu-chip-logo">GPU</div>
+          <div><small>${a.name.includes('NVIDIA')?'NVIDIA':a.name.includes('AMD')?'AMD':'Intel'}</small><h3>${shortGpuName(a.name)}</h3></div>
+          <div class="gpu-tags"><span>${gpuTier(a.score)}</span><span>${a.vram} GB VRAM</span></div>
         </div>
-        <div class="compare-metric">
-          <span>VRAM</span>
-          <div class="metric-row"><strong>${a.vram} GB</strong><i>vs</i><strong>${b.vram} GB</strong></div>
-        </div>
-        <div class="compare-metric">
-          <span>Sınıf</span>
-          <div class="metric-row"><strong>${gpuTier(a.score)}</strong><i>vs</i><strong>${gpuTier(b.score)}</strong></div>
+        <div class="vs-orb">VS</div>
+        <div class="gpu-showcase-card right">
+          <span class="gpu-label">GPU B</span>
+          <div class="gpu-chip-logo">GPU</div>
+          <div><small>${b.name.includes('NVIDIA')?'NVIDIA':b.name.includes('AMD')?'AMD':'Intel'}</small><h3>${shortGpuName(b.name)}</h3></div>
+          <div class="gpu-tags"><span>${gpuTier(b.score)}</span><span>${b.vram} GB VRAM</span></div>
         </div>
       </div>
 
-      <div class="compare-reasons">
-        <div class="reason-box"><h4>${a.name} neden tercih edilebilir?</h4><ul>${reasonsA.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-        <div class="reason-box"><h4>${b.name} neden tercih edilebilir?</h4><ul>${reasonsB.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="compare-summary-v34">${verdict}</div>
+
+      <div class="compare-metrics-v34">
+        <div><span>Performans endeksi</span><strong>${a.score}</strong><i>vs</i><strong>${b.score}</strong></div>
+        <div><span>VRAM</span><strong>${a.vram} GB</strong><i>vs</i><strong>${b.vram} GB</strong></div>
+        <div><span>Sınıf</span><strong>${gpuTier(a.score)}</strong><i>vs</i><strong>${gpuTier(b.score)}</strong></div>
       </div>
 
-      <div class="fps-compare">
-        <h4>${game.name} • Tahmini FPS karşılaştırması</h4>
-        <table class="fps-table">
-          <thead><tr><th>Çözünürlük</th><th>${a.name}</th><th>${b.name}</th><th>Performans avantajı</th></tr></thead>
-          <tbody>${fpsRows}</tbody>
-        </table>
+      <div class="reason-grid-v34">
+        <div><h4>${shortGpuName(a.name)} neden tercih edilebilir?</h4><ul>${reasonsA.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><h4>${shortGpuName(b.name)} neden tercih edilebilir?</h4><ul>${reasonsB.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      </div>
+
+      <div class="dual-results-grid">
+        <div class="result-panel estimate-panel">
+          <div class="result-panel-head">
+            <div><span class="result-kicker estimate-kicker">TAHMİNİ SONUÇ (Site Modeli)</span><h4>${game.name} • Tahmini FPS</h4></div>
+          </div>
+          <p class="panel-desc">Donanım özellikleri, mimari farklar ve oyun profiline göre hesaplanmış yaklaşık değerlerdir.</p>
+          <div class="table-wrap">
+            <table class="fps-table modern-table">
+              <thead><tr><th>Çözünürlük</th><th>${shortGpuName(a.name)}</th><th>${shortGpuName(b.name)}</th><th>Performans farkı</th></tr></thead>
+              <tbody>${fpsRows}</tbody>
+            </table>
+          </div>
+          <div class="model-note">ⓘ Bu değerler tahmindir; gerçek oyun performansı sürücü, ayarlar ve sistem bileşenlerine göre değişebilir.</div>
+        </div>
+
+        ${real.html}
+      </div>
+
+      <div class="benchmark-availability ${real.available?'available':'missing'}">
+        <span>${real.available?'✓':'!'}</span>
+        <div><strong>${real.available?'Bu karşılaştırmada gerçek benchmark verisi mevcut!':'Bu karşılaştırmada gerçek benchmark verisi eksik.'}</strong>
+        <small>${real.available?'Seçtiğin iki ekran kartı da kaynak test veri tabanında bulunuyor.':'En az bir ekran kartı kaynak veri setinde yer almıyor.'}</small></div>
       </div>
     `;
   }
-
 
 
 
