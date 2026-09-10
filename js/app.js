@@ -6,6 +6,8 @@
   function fillLists(){
     D.cpus.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('cpuList').appendChild(o)});
     D.gpus.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('gpuList').appendChild(o)});
+    D.cpus.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('compatCpuList').appendChild(o)});
+    D.motherboards.forEach(x=>{const o=document.createElement('option');o.value=x.name;$('compatBoardList').appendChild(o)});
     D.games.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;$('gameSelect').appendChild(o)});
 
     D.gpus.forEach((x,i)=>{
@@ -34,6 +36,120 @@
   }
 
   function findExact(list, value){return list.find(x=>x.name.toLocaleLowerCase('tr')===value.trim().toLocaleLowerCase('tr'))}
+
+
+  function refillCompareSelects(list, selectAId, selectBId, query){
+    const a=$(selectAId), b=$(selectBId);
+    const oldA=a.value, oldB=b.value;
+    const q=(query||'').trim().toLocaleLowerCase('tr');
+    const filtered=list.map((x,i)=>({x,i})).filter(({x})=>!q || x.name.toLocaleLowerCase('tr').includes(q));
+    [a,b].forEach(sel=>sel.innerHTML='');
+    filtered.forEach(({x,i})=>{
+      const oa=document.createElement('option');oa.value=String(i);oa.textContent=x.name;a.appendChild(oa);
+      const ob=document.createElement('option');ob.value=String(i);ob.textContent=x.name;b.appendChild(ob);
+    });
+    if([...a.options].some(o=>o.value===oldA)) a.value=oldA;
+    if([...b.options].some(o=>o.value===oldB)) b.value=oldB;
+  }
+
+  function setupCompareFilters(){
+    $('filterGpu').addEventListener('input',e=>refillCompareSelects(D.gpus,'compareGpuA','compareGpuB',e.target.value));
+    $('filterCpu').addEventListener('input',e=>refillCompareSelects(D.cpus,'compareCpuA','compareCpuB',e.target.value));
+    $('filterBoard').addEventListener('input',e=>refillCompareSelects(D.motherboards,'compareBoardA','compareBoardB',e.target.value));
+  }
+
+  function encodeAnalysisUrl(){
+    const params=new URLSearchParams({
+      cpu:$('cpuInput').value,
+      gpu:$('gpuInput').value,
+      ram:$('ramSelect').value,
+      res:$('resolutionSelect').value,
+      scenario:$('scenarioSelect').value,
+      game:$('gameSelect').value
+    });
+    return `${location.origin}${location.pathname}?${params.toString()}#analysis`;
+  }
+
+  async function shareAnalysis(){
+    if(!findExact(D.cpus,$('cpuInput').value) || !findExact(D.gpus,$('gpuInput').value)){
+      $('shareStatus').textContent='Önce geçerli bir analiz yap.';
+      return;
+    }
+    const url=encodeAnalysisUrl();
+    try{
+      if(navigator.share){
+        await navigator.share({title:'PC Darboğaz Lab Analizi',text:'PC sistem analizim',url});
+        $('shareStatus').textContent='Paylaşım açıldı.';
+      }else{
+        await navigator.clipboard.writeText(url);
+        $('shareStatus').textContent='Bağlantı kopyalandı.';
+      }
+    }catch(err){
+      try{
+        await navigator.clipboard.writeText(url);
+        $('shareStatus').textContent='Bağlantı kopyalandı.';
+      }catch(_){
+        $('shareStatus').textContent=url;
+      }
+    }
+  }
+
+  function loadAnalysisFromUrl(){
+    const p=new URLSearchParams(location.search);
+    if(!p.has('cpu') || !p.has('gpu')) return;
+    $('cpuInput').value=p.get('cpu')||'';
+    $('gpuInput').value=p.get('gpu')||'';
+    if(p.get('ram')) $('ramSelect').value=p.get('ram');
+    if(p.get('res')) $('resolutionSelect').value=p.get('res');
+    if(p.get('scenario')) $('scenarioSelect').value=p.get('scenario');
+    if(p.get('game')) $('gameSelect').value=p.get('game');
+    if(findExact(D.cpus,$('cpuInput').value) && findExact(D.gpus,$('gpuInput').value)){
+      $('analysisForm').requestSubmit();
+    }
+  }
+
+  function checkCompatibility(){
+    const cpu=findExact(D.cpus,$('compatCpu').value);
+    const board=findExact(D.motherboards,$('compatBoard').value);
+    const ram=$('compatRam').value;
+
+    if(!cpu || !board){
+      $('compatOutput').innerHTML='<div class="compat-banner warn"><h3>Eksik seçim</h3><p>Listeden geçerli bir işlemci ve anakart seç.</p></div>';
+      return;
+    }
+
+    const socketOk=cpu.socket===board.socket;
+    const cpuMemory=(cpu.platform||'').toUpperCase();
+    const boardMemory=(board.memory||'').toUpperCase();
+    const ramOk=boardMemory.includes(ram);
+    const cpuRamOk=cpuMemory.includes(ram);
+
+    let statusClass='good', title='Temel olarak uyumlu';
+    let msg='CPU soketi, anakart soketi ve seçilen RAM türü temel seviyede eşleşiyor.';
+    if(!socketOk || !ramOk || !cpuRamOk){
+      statusClass='bad'; title='Uyumsuz parça seçimi';
+      const problems=[];
+      if(!socketOk) problems.push(`${cpu.name} ${cpu.socket} soket kullanırken ${board.name} ${board.socket} soket kullanıyor`);
+      if(!ramOk) problems.push(`${board.name} ${board.memory} bellek kullanıyor; seçimin ${ram}`);
+      if(!cpuRamOk) problems.push(`${cpu.name} platformu ${cpu.platform} ile listelenmiş; seçimin ${ram}`);
+      msg=problems.join('. ')+'.';
+    }
+
+    $('compatOutput').innerHTML=`
+      <div class="compat-result">
+        <div class="compat-banner ${statusClass}">
+          <h3>${title}</h3>
+          <p>${msg}</p>
+        </div>
+        <div class="compat-grid">
+          <div class="compat-item"><span>CPU soketi</span><strong>${cpu.socket}</strong></div>
+          <div class="compat-item"><span>Anakart</span><strong>${board.chipset} • ${board.socket} • ${board.memory}</strong></div>
+          <div class="compat-item"><span>Seçilen RAM</span><strong>${ram}</strong></div>
+        </div>
+        ${socketOk?'<div class="compat-banner warn"><h3>BIOS kontrolünü unutma</h3><p>Soket eşleşse bile özellikle yeni işlemcilerde anakartın BIOS sürümü CPU desteği için güncel olmayabilir.</p></div>':''}
+      </div>`;
+  }
+
 
   function analyze(e){
     e.preventDefault();
@@ -365,10 +481,14 @@
   $('compareBtn').addEventListener('click',compareGpus);
   $('compareCpuBtn').addEventListener('click',compareCpus);
   $('compareBoardBtn').addEventListener('click',compareBoards);
+  $('compatBtn').addEventListener('click',checkCompatibility);
+  $('shareAnalysisBtn').addEventListener('click',shareAnalysis);
   $('buildBtn').addEventListener('click',build);
   setupCompareTabs();
+  setupCompareFilters();
   compareGpus();
   compareCpus();
   compareBoards();
   build();
+  loadAnalysisFromUrl();
 })();

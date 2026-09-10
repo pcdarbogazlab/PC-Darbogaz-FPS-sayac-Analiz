@@ -58,6 +58,7 @@
       <nav class="nav-links" aria-label="Ana menü">
         <a href="#analyze">Analiz</a>
         <a href="#compare">Karşılaştırmalar</a>
+        <a href="#compatibility">Uyumluluk</a>
         <a href="#builder">Sistem Topla</a>
         <a href="#method">Nasıl Çalışır?</a>
       </nav>
@@ -171,7 +172,13 @@
             <div class="balance-track" aria-label="CPU GPU denge göstergesi">
               <span>CPU sınırlı</span><div><i id="balanceMarker"></i></div><span>GPU sınırlı</span>
             </div>
-            <div class="advice-box"><b>Yükseltme notu</b><p id="adviceText"></p></div>
+            <div class="advice-box"><b>Yükseltme notu</b><p id="adviceText"></p>
+
+            <div class="result-actions">
+              <button type="button" id="shareAnalysisBtn" class="secondary-btn">Analizi paylaş</button>
+              <span id="shareStatus" class="share-status" aria-live="polite"></span>
+            </div>
+</div>
           </div>
         </div>
       </div>
@@ -195,6 +202,7 @@
 
       <div class="compare-panel active" data-compare-panel="gpu">
         <div class="compare-card">
+          <div class="compare-search"><label>GPU ara<input id="filterGpu" type="search" placeholder="Örn. RTX 5070, RX 7800 XT"></label></div>
           <div class="compare-controls">
             <label>1. ekran kartı<select id="compareGpuA"></select></label>
             <label>2. ekran kartı<select id="compareGpuB"></select></label>
@@ -208,6 +216,7 @@
 
       <div class="compare-panel" data-compare-panel="cpu">
         <div class="compare-card">
+          <div class="compare-search"><label>CPU ara<input id="filterCpu" type="search" placeholder="Örn. 5700X3D, 13600K"></label></div>
           <div class="compare-controls cpu-controls">
             <label>1. işlemci<select id="compareCpuA"></select></label>
             <label>2. işlemci<select id="compareCpuB"></select></label>
@@ -221,6 +230,7 @@
 
       <div class="compare-panel" data-compare-panel="motherboard">
         <div class="compare-card">
+          <div class="compare-search"><label>Anakart ara<input id="filterBoard" type="search" placeholder="Örn. B550, B650 Tomahawk"></label></div>
           <div class="compare-controls board-controls">
             <label>1. anakart<select id="compareBoardA"></select></label>
             <label>2. anakart<select id="compareBoardB"></select></label>
@@ -230,6 +240,46 @@
           <div id="compareBoardOutput" class="compare-output" aria-live="polite"></div>
           <p class="fineprint compare-disclaimer">Anakartlarda “FPS benchmark kazananı” göstermek doğru değildir. Karşılaştırma VRM, platform, bellek, PCIe/M.2, Wi‑Fi, hız aşırtma ve yükseltme potansiyeline dayanır.</p>
         </div>
+      </div>
+    </section>
+
+
+    <section class="section shell" id="compatibility">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">PARÇA UYUMLULUĞU</span>
+          <h2>CPU, anakart ve RAM birbiriyle uyumlu mu?</h2>
+        </div>
+        <p>İşlemci soketi ile anakart soketini ve anakartın desteklediği bellek türünü temel seviyede kontrol eder.</p>
+      </div>
+
+      <div class="compat-card">
+        <div class="compat-controls">
+          <label>
+            İşlemci
+            <input id="compatCpu" list="compatCpuList" placeholder="Örn. AMD Ryzen 7 5700X">
+            <datalist id="compatCpuList"></datalist>
+          </label>
+          <label>
+            Anakart
+            <input id="compatBoard" list="compatBoardList" placeholder="Örn. MSI B550-A PRO">
+            <datalist id="compatBoardList"></datalist>
+          </label>
+          <label>
+            RAM türü
+            <select id="compatRam">
+              <option value="DDR4">DDR4</option>
+              <option value="DDR5">DDR5</option>
+            </select>
+          </label>
+          <button type="button" id="compatBtn" class="primary-btn">Uyumluluğu kontrol et</button>
+        </div>
+        <div id="compatOutput" class="compat-output">
+          <div class="compat-placeholder">
+            CPU, anakart ve RAM seçerek temel uyumluluk sonucunu gör.
+          </div>
+        </div>
+        <p class="fineprint">Not: Aynı sokette olmak her BIOS sürümünün her işlemciyi desteklediği anlamına gelmez. Özellikle eski anakart + yeni CPU eşleşmelerinde üreticinin CPU destek listesini ve gerekli BIOS sürümünü ayrıca kontrol et.</p>
       </div>
     </section>
 
