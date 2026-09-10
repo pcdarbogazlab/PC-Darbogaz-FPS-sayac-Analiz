@@ -146,3 +146,20 @@
 @media(max-width:650px){
   .compare-search-grid{grid-template-columns:1fr}
 }
+
+/* v3.2 - clearer winner display */
+.perf-winner{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:6px 10px;border-radius:999px;
+  background:rgba(78,230,168,.10);
+  border:1px solid rgba(78,230,168,.28);
+  color:#6ff0bc;font-weight:800;white-space:nowrap
+}
+.perf-winner b{color:#a4ffda}
+.perf-close{
+  display:inline-flex;justify-content:center;padding:6px 10px;border-radius:999px;
+  background:rgba(157,176,197,.08);border:1px solid rgba(157,176,197,.18);
+  color:#b9c8d8;font-weight:700
+}
+.fps-table th:last-child,.fps-table td:last-child{text-align:center}
+@media(max-width:700px){.perf-winner{white-space:normal}}

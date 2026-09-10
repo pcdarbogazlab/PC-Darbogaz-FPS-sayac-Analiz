@@ -279,16 +279,20 @@
     const fpsRows=['1080','1440','2160'].map(res=>{
       const fa=compareFps(a,game,res), fb=compareFps(b,game,res);
       const d=pctDiff(fa,fb);
-      const cls=Math.abs(d)<3?'delta-flat':d>0?'delta-up':'delta-down';
-      const sign=d>0?'+':'';
-      return `<tr><td>${res==='1080'?'1080p':res==='1440'?'1440p':'4K'}</td><td>${fa} FPS</td><td>${fb} FPS</td><td class="${cls}">${sign}${Math.round(d)}%</td></tr>`;
+      let advantage='<span class="perf-close">≈ Eşit</span>';
+      if(Math.abs(d)>=3){
+        const rowWinner=d>0?b:a;
+        const shortName=rowWinner.name.replace('NVIDIA GeForce ','').replace('AMD Radeon ','').replace('Intel Arc ','');
+        advantage=`<span class="perf-winner">🏆 ${shortName} <b>+%${Math.round(Math.abs(d))}</b></span>`;
+      }
+      return `<tr><td>${res==='1080'?'1080p':res==='1440'?'1440p':'4K'}</td><td>${fa} FPS</td><td>${fb} FPS</td><td>${advantage}</td></tr>`;
     }).join('');
 
     let verdictTitle='Çok yakın performans';
     let verdictText=`${a.name} ve ${b.name} bu modelde birbirine yakın sınıfta. Oyun motoru, çözünürlük ve VRAM kullanımı sonucu değiştirebilir.`;
     if(winner){
-      verdictTitle=`${winner.name} genel olarak önde`;
-      verdictText=`Normalize edilmiş performans endeksi ve ${game.name} profiline göre ${winner.name}, ${loser.name} karşısında daha güçlü seçenek görünüyor. Farkın büyüklüğü oyuna ve çözünürlüğe göre değişir.`;
+      verdictTitle=`🏆 ${winner.name} önde`;
+      verdictText=`Normalize edilmiş performans endeksi ve ${game.name} profiline göre ${winner.name}, ${loser.name} karşısında daha güçlü seçenek görünüyor. Aşağıdaki tabloda her çözünürlükte kazanan kart ve yüzde avantajı doğrudan gösteriliyor.`;
     }
 
     $('compareOutput').innerHTML=`
@@ -327,7 +331,7 @@
       <div class="fps-compare">
         <h4>${game.name} • Tahmini FPS karşılaştırması</h4>
         <table class="fps-table">
-          <thead><tr><th>Çözünürlük</th><th>${a.name}</th><th>${b.name}</th><th>B'nin A'ya farkı</th></tr></thead>
+          <thead><tr><th>Çözünürlük</th><th>${a.name}</th><th>${b.name}</th><th>Performans avantajı</th></tr></thead>
           <tbody>${fpsRows}</tbody>
         </table>
       </div>
@@ -368,7 +372,7 @@
     if(!reasonsA.length) reasonsA.push('Bu karşılaştırmada belirgin teknik üstünlük az; fiyat ve platform maliyeti belirleyici olabilir.');
     if(!reasonsB.length) reasonsB.push('Bu karşılaştırmada belirgin teknik üstünlük az; fiyat ve platform maliyeti belirleyici olabilir.');
 
-    const title=winner?`${winner.name} ${modeLabel} için önde`:'İki CPU birbirine yakın';
+    const title=winner?`🏆 ${winner.name} ${modeLabel} için önde`:'İki CPU birbirine yakın';
     const text=winner?`${winner.name}, seçilen ${modeLabel} profilinde ${loser.name} karşısında yaklaşık %${Math.round(Math.abs(d))} daha yüksek normalize edilmiş endeks üretiyor.`:
       `Seçilen ${modeLabel} profilinde fark küçük. Oyun motoru, RAM, soğutma ve güç limitleri sonucu değiştirebilir.`;
 
@@ -441,7 +445,7 @@
       compat=`<div class="compat-good">✓ Her iki anakart da ${a.socket} soketini kullanıyor; aynı platform içindeki alternatifler olarak daha doğrudan karşılaştırılabilir.</div>`;
     }
 
-    const title=winner?`${winner.name} seçilen öncelikte daha güçlü`:'İki anakart yakın seviyede';
+    const title=winner?`Avantajlı: ${winner.name}`:'İki anakart yakın seviyede';
     const text=winner?`${winner.name}, özellik/altyapı endeksinde ${loser.name} karşısında önde. Bu fark doğrudan daha fazla FPS anlamına gelmez.`:
       'Seçilen öncelikte fark küçük. Fiyat, BIOS özellikleri, port ihtiyacı ve kasa form faktörü daha önemli olabilir.';
 
