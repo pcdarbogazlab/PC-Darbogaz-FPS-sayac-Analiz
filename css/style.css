@@ -163,3 +163,14 @@
 }
 .fps-table th:last-child,.fps-table td:last-child{text-align:center}
 @media(max-width:700px){.perf-winner{white-space:normal}}
+
+
+/* v3.3 benchmark source layer */
+.benchmark-source-card,.real-bench{background:#091827;border:1px solid #1d3954;border-radius:18px;padding:18px;margin:16px 0}
+.benchmark-source-card{display:flex;justify-content:space-between;gap:22px;align-items:center}
+.benchmark-source-card h3,.real-bench h4{margin:5px 0 8px}
+.benchmark-source-meta{min-width:280px;color:#b8cadb;font-size:13px}
+.real-bench-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:12px}
+.real-bench-head a{color:var(--cyan);font-weight:800;text-decoration:none}
+.real-bench.unavailable{color:var(--muted)}
+@media(max-width:720px){.benchmark-source-card,.real-bench-head{flex-direction:column;align-items:flex-start}.benchmark-source-meta{min-width:0}}
