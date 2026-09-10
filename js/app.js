@@ -340,6 +340,41 @@
 
 
 
+
+  function realGpuBenchHtml(a,b){
+    const db=window.PCDB_BENCH?.gpu||{};
+    const ba=db[a.name], bb=db[b.name];
+    if(!ba || !bb){
+      return `<div class="real-bench unavailable"><h4>Kaynaklı benchmark</h4><p>Bu iki model için ortak kaynaklı benchmark verisi henüz veri setine eklenmedi. Tahmini FPS sonucu yukarıda ayrı olarak gösteriliyor.</p></div>`;
+    }
+    const rs=[
+      ['1080p Ultra','p1080'],
+      ['1440p Ultra','p1440'],
+      ['4K Ultra','p4k']
+    ].map(([label,k])=>{
+      const av=ba.raster[k], bv=bb.raster[k];
+      const d=((bv-av)/av)*100;
+      const win=Math.abs(d)<1?'≈ Eşit':`${d>0?b.name:a.name} +%${Math.round(Math.abs(d))}`;
+      return `<tr><td>${label}</td><td>${av.toFixed(1)} FPS</td><td>${bv.toFixed(1)} FPS</td><td><span class="${Math.abs(d)<1?'perf-close':'perf-winner'}">${Math.abs(d)<1?'≈ Eşit':'🏆 '+win}</span></td></tr>`;
+    }).join('');
+    return `<div class="real-bench">
+      <div class="real-bench-head"><div><span class="eyebrow">HARİCİ KAYNAK</span><h4>Gerçek raster benchmark ortalaması</h4></div><a href="${window.PCDB_BENCH.meta.gpuSourceUrl}" target="_blank" rel="noopener">Kaynağı aç ↗</a></div>
+      <div class="table-wrap"><table class="fps-table"><thead><tr><th>Çözünürlük</th><th>${a.name}</th><th>${b.name}</th><th>Avantaj</th></tr></thead><tbody>${rs}</tbody></table></div>
+      <p class="fineprint">Kaynak: ${window.PCDB_BENCH.meta.gpuSource}. Değerler kaynağın 11 oyunluk raster geometrik ortalamasıdır; DLSS/FSR/XeSS ve frame generation kapalıdır.</p>
+    </div>`;
+  }
+
+  function realCpuBenchHtml(a,b){
+    const db=window.PCDB_BENCH?.cpu||{};
+    const ba=db[a.name], bb=db[b.name];
+    if(!ba || !bb) return '';
+    const rows=[];
+    if(ba.gaming!=null && bb.gaming!=null) rows.push(`<tr><td>1080p oyun endeksi</td><td>${ba.gaming.toFixed(1)}</td><td>${bb.gaming.toFixed(1)}</td></tr>`);
+    if(ba.multi!=null && bb.multi!=null) rows.push(`<tr><td>Çok çekirdek endeksi</td><td>${ba.multi.toFixed(1)}</td><td>${bb.multi.toFixed(1)}</td></tr>`);
+    if(!rows.length) return '';
+    return `<div class="real-bench"><div class="real-bench-head"><div><span class="eyebrow">HARİCİ KAYNAK</span><h4>Kaynaklı CPU benchmark karşılaştırması</h4></div><a href="${window.PCDB_BENCH.meta.cpuSourceUrl}" target="_blank" rel="noopener">Kaynağı aç ↗</a></div><div class="table-wrap"><table class="fps-table"><thead><tr><th>Test</th><th>${a.name}</th><th>${b.name}</th></tr></thead><tbody>${rows.join('')}</tbody></table></div><p class="fineprint">Kaynak: ${window.PCDB_BENCH.meta.cpuSource}. Farklı test koşullarındaki eski ve yeni veri setleri doğrudan karıştırılmaz.</p></div>`;
+  }
+
   function cpuScoreForMode(cpu, mode){
     if(mode==='gaming') return cpu.gaming ?? cpu.score;
     if(mode==='multi') return cpu.multi ?? cpu.score;
@@ -397,7 +432,7 @@
       <div class="compare-reasons">
         <div class="reason-box"><h4>${a.name} neden tercih edilebilir?</h4><ul>${reasonsA.map(x=>`<li>${x}</li>`).join('')}</ul></div>
         <div class="reason-box"><h4>${b.name} neden tercih edilebilir?</h4><ul>${reasonsB.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      </div>`;
+      </div>${realGpuBenchHtml(a,b)}`;
   }
 
   function boardFeatureScore(board){
@@ -472,7 +507,7 @@
       <div class="compare-reasons">
         <div class="reason-box"><h4>${a.name} neden tercih edilebilir?</h4><ul>${reasonsA.map(x=>`<li>${x}</li>`).join('')}</ul></div>
         <div class="reason-box"><h4>${b.name} neden tercih edilebilir?</h4><ul>${reasonsB.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-      </div>`;
+      </div>${realCpuBenchHtml(a,b)}`;
   }
 
   function setupCompareTabs(){
