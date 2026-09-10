@@ -38,24 +38,38 @@
   function findExact(list, value){return list.find(x=>x.name.toLocaleLowerCase('tr')===value.trim().toLocaleLowerCase('tr'))}
 
 
-  function refillCompareSelects(list, selectAId, selectBId, query){
-    const a=$(selectAId), b=$(selectBId);
-    const oldA=a.value, oldB=b.value;
+  function refillCompareSelect(list, selectId, query){
+    const sel=$(selectId);
+    const oldValue=sel.value;
+    const oldText=sel.options[sel.selectedIndex]?.textContent || '';
     const q=(query||'').trim().toLocaleLowerCase('tr');
     const filtered=list.map((x,i)=>({x,i})).filter(({x})=>!q || x.name.toLocaleLowerCase('tr').includes(q));
-    [a,b].forEach(sel=>sel.innerHTML='');
+
+    sel.innerHTML='';
     filtered.forEach(({x,i})=>{
-      const oa=document.createElement('option');oa.value=String(i);oa.textContent=x.name;a.appendChild(oa);
-      const ob=document.createElement('option');ob.value=String(i);ob.textContent=x.name;b.appendChild(ob);
+      const o=document.createElement('option');
+      o.value=String(i);
+      o.textContent=x.name;
+      sel.appendChild(o);
     });
-    if([...a.options].some(o=>o.value===oldA)) a.value=oldA;
-    if([...b.options].some(o=>o.value===oldB)) b.value=oldB;
+
+    if([...sel.options].some(o=>o.value===oldValue)){
+      sel.value=oldValue;
+    }else if(oldText){
+      const match=[...sel.options].find(o=>o.textContent===oldText);
+      if(match) sel.value=match.value;
+    }
   }
 
   function setupCompareFilters(){
-    $('filterGpu').addEventListener('input',e=>refillCompareSelects(D.gpus,'compareGpuA','compareGpuB',e.target.value));
-    $('filterCpu').addEventListener('input',e=>refillCompareSelects(D.cpus,'compareCpuA','compareCpuB',e.target.value));
-    $('filterBoard').addEventListener('input',e=>refillCompareSelects(D.motherboards,'compareBoardA','compareBoardB',e.target.value));
+    $('filterGpuA').addEventListener('input',e=>refillCompareSelect(D.gpus,'compareGpuA',e.target.value));
+    $('filterGpuB').addEventListener('input',e=>refillCompareSelect(D.gpus,'compareGpuB',e.target.value));
+
+    $('filterCpuA').addEventListener('input',e=>refillCompareSelect(D.cpus,'compareCpuA',e.target.value));
+    $('filterCpuB').addEventListener('input',e=>refillCompareSelect(D.cpus,'compareCpuB',e.target.value));
+
+    $('filterBoardA').addEventListener('input',e=>refillCompareSelect(D.motherboards,'compareBoardA',e.target.value));
+    $('filterBoardB').addEventListener('input',e=>refillCompareSelect(D.motherboards,'compareBoardB',e.target.value));
   }
 
   function encodeAnalysisUrl(){

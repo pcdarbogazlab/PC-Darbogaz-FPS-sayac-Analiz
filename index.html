@@ -202,7 +202,10 @@
 
       <div class="compare-panel active" data-compare-panel="gpu">
         <div class="compare-card">
-          <div class="compare-search"><label>GPU ara<input id="filterGpu" type="search" placeholder="Örn. RTX 5070, RX 7800 XT"></label></div>
+          <div class="compare-search-grid">
+            <label>1. GPU ara<input id="filterGpuA" type="search" placeholder="Örn. RTX 5070"></label>
+            <label>2. GPU ara<input id="filterGpuB" type="search" placeholder="Örn. RX 7800 XT"></label>
+          </div>
           <div class="compare-controls">
             <label>1. ekran kartı<select id="compareGpuA"></select></label>
             <label>2. ekran kartı<select id="compareGpuB"></select></label>
@@ -216,7 +219,10 @@
 
       <div class="compare-panel" data-compare-panel="cpu">
         <div class="compare-card">
-          <div class="compare-search"><label>CPU ara<input id="filterCpu" type="search" placeholder="Örn. 5700X3D, 13600K"></label></div>
+          <div class="compare-search-grid">
+            <label>1. CPU ara<input id="filterCpuA" type="search" placeholder="Örn. 5700X3D"></label>
+            <label>2. CPU ara<input id="filterCpuB" type="search" placeholder="Örn. 13600K"></label>
+          </div>
           <div class="compare-controls cpu-controls">
             <label>1. işlemci<select id="compareCpuA"></select></label>
             <label>2. işlemci<select id="compareCpuB"></select></label>
@@ -230,7 +236,10 @@
 
       <div class="compare-panel" data-compare-panel="motherboard">
         <div class="compare-card">
-          <div class="compare-search"><label>Anakart ara<input id="filterBoard" type="search" placeholder="Örn. B550, B650 Tomahawk"></label></div>
+          <div class="compare-search-grid">
+            <label>1. Anakart ara<input id="filterBoardA" type="search" placeholder="Örn. B550-A PRO"></label>
+            <label>2. Anakart ara<input id="filterBoardB" type="search" placeholder="Örn. B650 Tomahawk"></label>
+          </div>
           <div class="compare-controls board-controls">
             <label>1. anakart<select id="compareBoardA"></select></label>
             <label>2. anakart<select id="compareBoardB"></select></label>

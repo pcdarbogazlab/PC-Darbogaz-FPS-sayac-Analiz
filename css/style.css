@@ -113,3 +113,36 @@
 @media(max-width:560px){
   .compat-controls{grid-template-columns:1fr}
 }
+
+
+/* v3.1 - independent search boxes */
+.compare-search-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:0 0 14px;
+}
+.compare-search-grid label{
+  display:grid;
+  gap:7px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+.compare-search-grid input{
+  width:100%;
+  box-sizing:border-box;
+  background:#081522;
+  border:1px solid #203753;
+  color:var(--text);
+  border-radius:12px;
+  padding:12px 14px;
+  outline:none;
+}
+.compare-search-grid input:focus{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(57,217,255,.08);
+}
+@media(max-width:650px){
+  .compare-search-grid{grid-template-columns:1fr}
+}
