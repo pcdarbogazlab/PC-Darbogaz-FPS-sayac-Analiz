@@ -195,16 +195,16 @@
       </div>
 
       
-      <div class="benchmark-source-card">
-        <div>
-          <span class="eyebrow">KAYNAKLI BENCHMARK KATMANI</span>
-          <h3>Desteklenen modellerde gerçek test verisini ayrıca gösteriyoruz.</h3>
-          <p>Kaynaklı veriler, site içi tahmini FPS modelinden ayrı tutulur. Böylece kullanıcı “tahmin” ile “harici benchmark” sonucunu karıştırmaz.</p>
+      
+      <div class="benchmark-source-card benchmark-source-card-v34">
+        <div class="bench-status-icon">✓</div>
+        <div class="bench-status-copy">
+          <strong>Gerçek benchmark verisi destekleniyor</strong>
+          <span>Kaynaklı sonuçlar, site içi tahmini FPS modelinden ayrı gösterilir.</span>
         </div>
         <div class="benchmark-source-meta">
-          <strong>GPU:</strong> Tom's Hardware GPU Hierarchy 2026<br>
-          <strong>CPU:</strong> Tom's Hardware CPU Hierarchy 2026<br>
-          <small>Veri alt kümesi • 10 Eylül 2026</small>
+          <strong>Kaynak:</strong> Tom's Hardware GPU Hierarchy 2026<br>
+          <small id="benchGpuCount">Desteklenen ekran kartları yükleniyor…</small>
         </div>
       </div>
 
@@ -214,20 +214,31 @@
         <button class="compare-tab" type="button" data-compare-tab="motherboard">Anakart</button>
       </div>
 
+      
       <div class="compare-panel active" data-compare-panel="gpu">
-        <div class="compare-card">
-          <div class="compare-search-grid">
-            <label>1. GPU ara<input id="filterGpuA" type="search" placeholder="Örn. RTX 5070"></label>
-            <label>2. GPU ara<input id="filterGpuB" type="search" placeholder="Örn. RX 7800 XT"></label>
+        <div class="compare-card compare-card-v34">
+          <div class="gpu-compare-title">
+            <div>
+              <span class="eyebrow">EKRAN KARTI KARŞILAŞTIRMASI</span>
+              <h3>İki ekran kartını tahmini ve gerçek test verileriyle karşılaştır.</h3>
+            </div>
+            <span class="source-badge">✓ Kaynaklı benchmark</span>
           </div>
-          <div class="compare-controls">
+
+          <div class="compare-search-grid">
+            <label>1. GPU ara<input id="filterGpuA" type="search" placeholder="Örn. RTX 4060 Ti"></label>
+            <label>2. GPU ara<input id="filterGpuB" type="search" placeholder="Örn. RTX 5070"></label>
+          </div>
+
+          <div class="compare-controls gpu-controls-v34">
             <label>1. ekran kartı<select id="compareGpuA"></select></label>
             <label>2. ekran kartı<select id="compareGpuB"></select></label>
             <label>Oyun profili<select id="compareGame"></select></label>
-            <button type="button" id="compareBtn" class="primary-btn">GPU karşılaştır</button>
+            <button type="button" id="compareBtn" class="primary-btn">⇄ Karşılaştır</button>
           </div>
-          <div id="compareOutput" class="compare-output" aria-live="polite"></div>
-          <p class="fineprint compare-disclaimer">Performans endeksi PC Darboğaz Lab içindeki normalize edilmiş karşılaştırma skorudur; tek bir bağımsız benchmark sonucu değildir. FPS değerleri yaklaşık karşılaştırma amaçlıdır.</p>
+
+          <div id="compareOutput" class="compare-output compare-output-v34" aria-live="polite"></div>
+          <p class="fineprint compare-disclaimer">“Tahmini sonuç” PC Darboğaz Lab modelidir. “Gerçek benchmark sonucu” yalnızca iki model de kaynak veri setinde varsa gösterilir.</p>
         </div>
       </div>
 
