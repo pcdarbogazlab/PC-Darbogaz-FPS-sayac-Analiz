@@ -209,3 +209,9 @@
 .benchmark-availability{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;border-radius:14px}.benchmark-availability>span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:900}.benchmark-availability div{display:grid;gap:3px}.benchmark-availability small{color:#9cb4c5}.benchmark-availability.available{border:1px solid rgba(47,227,169,.6);background:rgba(10,83,61,.34)}.benchmark-availability.available>span{background:#4de9b3;color:#05261b}.benchmark-availability.available strong{color:#58f0bd}.benchmark-availability.missing{border:1px solid #5a6471;background:#171d25}.benchmark-availability.missing>span{background:#6f7b87;color:white}
 @media(max-width:1050px){.dual-results-grid{grid-template-columns:1fr}.gpu-controls-v34{grid-template-columns:1fr 1fr}.gpu-controls-v34 button{grid-column:1/-1}}
 @media(max-width:760px){.gpu-versus-grid{grid-template-columns:1fr}.vs-orb{margin:-4px auto}.compare-metrics-v34,.reason-grid-v34{grid-template-columns:1fr}.gpu-compare-title{flex-direction:column}.source-row{align-items:flex-start;flex-direction:column}}
+
+/* v4 - AdSense readiness, guides and trust/footer */
+.adsense-slot{max-width:1180px;margin:10px auto 38px;min-height:110px;padding:20px;display:grid;place-items:center;text-align:center;border:1px dashed rgba(71,142,188,.42);border-radius:16px;background:rgba(8,28,45,.42);color:#7795aa}
+.adsense-slot span{font-size:10px;letter-spacing:.16em}.adsense-slot strong{font-size:16px;color:#9ac7df;margin-top:4px}.adsense-slot small{margin-top:2px}
+.footer-grid-v4{grid-template-columns:2fr 1fr 1fr;align-items:start}.footer-link-column{display:grid;gap:8px}.footer-link-column strong{margin-bottom:4px}.footer-link-column a{color:#9fc2d8;text-decoration:none;font-size:13px}.footer-link-column a:hover{color:#55dfff}
+@media(max-width:760px){.footer-grid-v4{grid-template-columns:1fr}.adsense-slot{margin-left:18px;margin-right:18px}}

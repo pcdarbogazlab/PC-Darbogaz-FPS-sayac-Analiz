@@ -1,0 +1,14 @@
+
+:root{color-scheme:dark;--bg:#06111d;--panel:#0b1b2c;--line:#1d3853;--text:#eaf4ff;--muted:#9fb6ca;--cyan:#39d9ff;--green:#55efb9}
+*{box-sizing:border-box}body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:radial-gradient(circle at 20% 0,#0a2740 0,#06111d 40%);color:var(--text);margin:0;line-height:1.7}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:980px;margin:auto;padding:34px 20px 64px}
+.top{display:flex;gap:18px;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:34px}.brand{font-size:20px;font-weight:800}.nav{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+.hero{padding:28px 0 10px}.eyebrow{color:var(--cyan);font-weight:800;font-size:12px;letter-spacing:.12em}.hero h1{font-size:clamp(32px,6vw,52px);line-height:1.08;margin:8px 0 14px}.lead{color:var(--muted);font-size:18px;max-width:780px}
+.card{background:linear-gradient(180deg,rgba(13,35,56,.94),rgba(8,24,39,.96));border:1px solid var(--line);border-radius:18px;padding:24px;margin:20px 0}.card h2,.card h3{line-height:1.2}.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.pill{display:inline-block;padding:5px 9px;border:1px solid #2c6689;border-radius:999px;font-size:12px;color:#bdefff}
+.notice{border-color:#286955;background:rgba(19,77,59,.25)}.notice strong{color:var(--green)}
+.footer{border-top:1px solid var(--line);margin-top:42px;padding-top:24px;color:var(--muted);font-size:13px}.footer-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+.ad-placeholder{min-height:116px;display:grid;place-items:center;text-align:center;border:1px dashed #315a78;border-radius:14px;background:rgba(10,36,57,.35);color:#7895aa;margin:28px 0;padding:18px}.ad-placeholder strong{display:block;color:#9abbd0}
+.article-list{display:grid;gap:14px}.article-link{display:block;padding:18px;border:1px solid var(--line);border-radius:14px;background:#091827}.article-link strong{display:block;color:#eaf4ff;font-size:18px}.article-link span{color:var(--muted);font-size:14px}
+table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left}th{color:#9fc9df}
+@media(max-width:720px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}}

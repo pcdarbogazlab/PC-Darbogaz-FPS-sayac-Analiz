@@ -1,0 +1,3 @@
+# AdSense onayından sonra publisher ID'n ile bu dosyayı ads.txt olarak yeniden adlandır.
+# Örnek biçim:
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

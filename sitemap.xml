@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/</loc><priority>1.0</priority></url>
-  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/karsilastir/rtx-5070-vs-rtx-4070-super.html</loc><priority>0.8</priority></url>
-  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/karsilastir/rtx-4060-ti-vs-rx-7700-xt.html</loc><priority>0.8</priority></url>
-  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/darbogaz/ryzen-7-5700x-rtx-5070.html</loc><priority>0.8</priority></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/hakkimizda.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/iletisim.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/gizlilik.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/cerez-politikasi.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/metodoloji.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/index.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/darbogaz-nedir.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/1080p-cpu-neden-onemli.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/8gb-vram-yeterli-mi.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/fps-nasil-okunur.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/rehberler/gpu-karsilastirma-nasil-yapilir.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/karsilastir/rtx-5070-vs-rtx-4070-super.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/karsilastir/rtx-4060-ti-vs-rx-7700-xt.html</loc><lastmod>2026-09-10</lastmod></url>
+  <url><loc>https://pcdarbogazlab.github.io/PC-Darbogaz-FPS-sayac-Analiz/darbogaz/ryzen-7-5700x-rtx-5070.html</loc><lastmod>2026-09-10</lastmod></url>
 </urlset>
